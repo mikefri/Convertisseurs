@@ -1,92 +1,83 @@
 const upload = document.getElementById('upload');
-const uploadLabel = document.getElementById('upload-label');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const downloadBtn = document.getElementById('download-btn');
 const removeBgBtn = document.getElementById('remove-bg-btn');
 const loadingMsg = document.getElementById('loading-msg');
-const resetBtn = document.getElementById('reset-btn');
-const previewContainer = document.getElementById('preview-container');
 const imageDisplay = document.getElementById('image-display');
-const fileNameDisplay = document.getElementById('file-name');
+const previewContainer = document.getElementById('preview-container');
 
-let currentFileName = "";
+let net = null;
 
-// 1. Gérer l'upload
+// Charger le modèle au clic pour ne pas ralentir le site au début
+async function loadModel() {
+    if (!net) {
+        net = await bodyPix.load({
+            architecture: 'MobileNetV1',
+            outputStride: 16,
+            multiplier: 0.75,
+            quantBytes: 2
+        });
+    }
+    return net;
+}
+
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    currentFileName = file.name.split('.').slice(0, -1).join('.');
-    fileNameDisplay.innerText = file.name;
-
     const reader = new FileReader();
     reader.onload = (event) => {
         const img = new Image();
-        img.onload = () => updateUIWithImage(img);
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            imageDisplay.src = event.target.result;
+            previewContainer.style.display = 'block';
+            document.getElementById('upload-label').style.display = 'none';
+        };
         img.src = event.target.result;
     };
     reader.readAsDataURL(file);
 });
 
-function updateUIWithImage(img) {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0);
-    imageDisplay.src = canvas.toDataURL();
-    previewContainer.style.display = 'block';
-    uploadLabel.style.display = 'none';
-}
-
-// 2. Suppression de l'arrière-plan
 removeBgBtn.addEventListener('click', async () => {
     removeBgBtn.disabled = true;
     loadingMsg.style.display = 'block';
-    removeBgBtn.innerText = "⏳ Chargement de l'IA...";
-
+    
     try {
-        // On indique à l'IA d'utiliser le CDN jsDelivr pour ses fichiers internes (.wasm)
-        const config = {
-            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/",
-        };
+        const model = await loadModel();
+        // Segmentation de la personne
+        const segmentation = await model.segmentPerson(imageDisplay);
 
-        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        removeBgBtn.innerText = "🧠 Analyse de l'image...";
-        
-        // Exécution
-        const resultBlob = await imglyRemoveBackground(blob, config);
-        
-        const newImg = new Image();
-        newImg.onload = () => {
-            updateUIWithImage(newImg);
-            loadingMsg.style.display = 'none';
-            removeBgBtn.disabled = false;
-            removeBgBtn.innerText = "✨ Supprimer l'arrière-plan (IA)";
-        };
-        newImg.src = URL.createObjectURL(resultBlob);
-    } catch (err) {
-        console.error(err);
-        alert("L'IA a besoin de charger des composants (30Mo). Si cela échoue, rafraîchissez la page et réessayez.");
-        removeBgBtn.disabled = false;
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixel = imageData.data;
+
+        for (let i = 0; i < pixel.length; i += 4) {
+            // Si le pixel n'appartient pas à une personne (segmentation == 0)
+            if (segmentation.data[i / 4] === 0) {
+                pixel[i + 3] = 0; // On rend le pixel transparent
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        imageDisplay.src = canvas.toDataURL();
+        alert("Arrière-plan supprimé !");
+    } catch (error) {
+        console.error(error);
+        alert("Erreur lors du détourage.");
+    } finally {
         loadingMsg.style.display = 'none';
-        removeBgBtn.innerText = "✨ Supprimer l'arrière-plan (IA)";
+        removeBgBtn.disabled = false;
     }
 });
 
-// 3. Téléchargement
-downloadBtn.addEventListener('click', () => {
+// Téléchargement
+document.getElementById('download-btn').addEventListener('click', () => {
     const format = document.getElementById('format-select').value;
-    const extension = format.split('/')[1].replace('jpeg', 'jpg');
     const link = document.createElement('a');
-    link.download = `${currentFileName}-converti.${extension}`;
-    link.href = canvas.toDataURL(format, 0.9);
+    link.download = `resultat.${format.split('/')[1]}`;
+    link.href = canvas.toDataURL(format);
     link.click();
 });
 
-// 4. Reset
-resetBtn.addEventListener('click', () => {
-    previewContainer.style.display = 'none';
-    uploadLabel.style.display = 'inline-block';
-    upload.value = "";
-});
+document.getElementById('reset-btn').addEventListener('click', () => location.reload());
