@@ -205,3 +205,26 @@ document.getElementById('share-link').onclick = () => {
     navigator.clipboard.writeText(window.location.href);
     alert("Lien copié dans le presse-papier ! 📋");
 };
+// --- LOGIQUE THÈME SOMBRE ---
+const themeBtn = document.getElementById('theme-switch');
+const currentTheme = localStorage.getItem('theme');
+
+// Appliquer le thème sauvegardé au chargement
+if (currentTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeBtn.innerText = "☀️ Mode Clair";
+}
+
+themeBtn.addEventListener('click', () => {
+    let theme = document.documentElement.getAttribute('data-theme');
+    
+    if (theme === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.innerText = "🌙 Mode Sombre";
+        localStorage.setItem('theme', 'light');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.innerText = "☀️ Mode Clair";
+        localStorage.setItem('theme', 'dark');
+    }
+});
