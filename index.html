@@ -3,49 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Détourage IA Gratuit</title>
+    <title>ImageConvert Pro - Détourage IA</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></script>
 </head>
 <body>
-
     <div class="container">
-        <header>
-            <h1>🖼️ ImageConvert Pro</h1>
-            <p>Convertissez et supprimez l'arrière-plan localement.</p>
-        </header>
-
-        <main class="converter-box">
+        <h1>🖼️ ImageConvert Pro</h1>
+        
+        <div class="converter-box">
             <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" id="upload-label" class="upload-label">📁 Sélectionner une image</label>
-            
+            <label for="upload" id="upload-label" class="upload-label">📁 Choisir une photo</label>
+
             <div id="preview-container" style="display:none;">
-                <div class="image-preview">
-                    <img id="image-display" src="" alt="Aperçu">
+                <div class="canvas-wrapper">
+                    <canvas id="main-canvas"></canvas>
                 </div>
 
-                <div class="options">
-                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan (IA)</button>
-                    <div id="loading-msg" style="display:none; color: #4f46e5; font-weight: bold; margin-bottom: 15px;">
-                        ⏳ Analyse de la silhouette...
-                    </div>
-
-                    <label for="format-select">Format de sortie :</label>
+                <div class="controls">
+                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan</button>
+                    <p id="loading-msg" style="display:none;">⏳ Analyse en cours...</p>
+                    
                     <select id="format-select">
-                        <option value="image/png">PNG (Transparence)</option>
-                        <option value="image/webp">WebP</option>
-                        <option value="image/jpeg">JPG</option>
+                        <option value="image/png">Format PNG (Transparent)</option>
+                        <option value="image/jpeg">Format JPG (Fond blanc)</option>
                     </select>
+                    
+                    <button id="download-btn">📥 Télécharger</button>
+                    <button onclick="location.reload()" class="secondary-btn">Effacer tout</button>
                 </div>
-
-                <button id="download-btn">📥 Télécharger</button>
-                <button id="reset-btn" class="secondary-btn">Recommencer</button>
             </div>
-            <canvas id="canvas" style="display:none;"></canvas>
-        </main>
+        </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
