@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Détourage Précis</title>
+    <title>ImageConvert Pro - Temps Réel</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,15 +21,15 @@
                 <div class="controls">
                     <div class="tolerance-container">
                         <label for="tolerance-range">
-                            Tolérance (Traits du fond) : <span id="tolerance-value">80</span>
+                            Ajustement en temps réel : <span id="tolerance-value">80</span>
                         </label>
                         <input type="range" id="tolerance-range" min="0" max="200" value="80">
-                        <small>Augmentez pour supprimer les traits rouges, baissez si l'objet s'efface.</small>
+                        <small>Glissez pour effacer les traits rouges instantanément.</small>
                     </div>
 
-                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer le fond</button>
                     <button id="download-btn">📥 Télécharger en PNG</button>
-                    <button onclick="location.reload()" class="secondary-btn">Recommencer</button>
+                    <button id="reset-image-btn" class="secondary-btn">🔄 Réinitialiser l'image</button>
+                    <button onclick="location.reload()" class="secondary-btn" style="color:red">🗑️ Supprimer tout</button>
                 </div>
             </div>
         </div>
