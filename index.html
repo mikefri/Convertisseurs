@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ImageConvert Pro - Convertisseur & Détourage IA</title>
-    <meta name="description" content="Convertissez vos images et supprimez l'arrière-plan gratuitement avec notre IA intégrée.">
+    <meta name="description" content="Convertissez vos images et supprimez l'arrière-plan gratuitement avec notre IA local.">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@imgly/background-removal@1.4.5/dist/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/bundle.js"></script>
 </head>
 <body>
 
@@ -34,12 +34,12 @@
                 <div class="options">
                     <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan (IA)</button>
                     <div id="loading-msg" style="display:none; color: #4f46e5; font-weight: bold; margin-bottom: 15px;">
-                        ⏳ Initialisation de l'IA (veuillez patienter)...
+                        ⏳ Initialisation de l'IA (30Mo à charger la 1ère fois)...
                     </div>
 
                     <label for="format-select">Format de sortie :</label>
                     <select id="format-select">
-                        <option value="image/png">PNG (Recommandé pour détourage)</option>
+                        <option value="image/png">PNG (Transparence gérée)</option>
                         <option value="image/webp">WebP (.webp)</option>
                         <option value="image/jpeg">JPEG (.jpg)</option>
                     </select>
@@ -53,17 +53,17 @@
         <section class="monetization">
             <div class="kofi-card">
                 <p>Outil utile ?</p>
-                <a href="https://ko-fi.com/ton-pseudo" target="_blank" class="btn-kofi">☕ M'offrir un café</a>
+                <a href="https://ko-fi.com/votrepseudo" target="_blank" class="btn-kofi">☕ M'offrir un café</a>
             </div>
             <div class="affiliate-card">
-                <p><strong>Site trop lent ?</strong></p>
-                <a href="#" class="btn-affiliate">Hébergeur Premium →</a>
+                <p><strong>Besoin d'un logo ?</strong></p>
+                <a href="#" class="btn-affiliate">Créer un logo pro →</a>
             </div>
         </section>
 
         <footer class="seo-content">
-            <h2>Détourage local et sécurisé</h2>
-            <p>Notre IA de suppression d'arrière-plan traite vos images directement sur votre appareil. Vos données ne sont jamais envoyées sur un serveur.</p>
+            <h2>Détourage 100% Privé</h2>
+            <p>Contrairement aux autres sites, vos photos ne quittent pas votre ordinateur. Notre IA traite tout localement.</p>
         </footer>
     </div>
 
