@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Convertisseur & Détourage IA</title>
-    <meta name="description" content="Convertissez vos images et supprimez l'arrière-plan gratuitement avec notre IA local.">
+    <title>ImageConvert Pro - Détourage IA Gratuit</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/dist/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
 </head>
 <body>
 
     <div class="container">
         <header>
             <h1>🖼️ ImageConvert Pro</h1>
-            <p>Convertissez et détourez vos images gratuitement grâce à l'IA.</p>
+            <p>Convertissez et supprimez l'arrière-plan localement.</p>
         </header>
 
         <main class="converter-box">
@@ -25,46 +25,25 @@
                     <img id="image-display" src="" alt="Aperçu">
                 </div>
 
-                <div class="file-details">
-                    <span id="file-name">image.png</span>
-                </div>
-                
-                <canvas id="canvas" style="display:none;"></canvas>
-                
                 <div class="options">
                     <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan (IA)</button>
                     <div id="loading-msg" style="display:none; color: #4f46e5; font-weight: bold; margin-bottom: 15px;">
-                        ⏳ Initialisation de l'IA (30Mo à charger la 1ère fois)...
+                        ⏳ Analyse de la silhouette...
                     </div>
 
                     <label for="format-select">Format de sortie :</label>
                     <select id="format-select">
-                        <option value="image/png">PNG (Transparence gérée)</option>
-                        <option value="image/webp">WebP (.webp)</option>
-                        <option value="image/jpeg">JPEG (.jpg)</option>
+                        <option value="image/png">PNG (Transparence)</option>
+                        <option value="image/webp">WebP</option>
+                        <option value="image/jpeg">JPG</option>
                     </select>
                 </div>
 
-                <button id="download-btn">📥 Télécharger le résultat</button>
-                <button id="reset-btn" class="secondary-btn">Supprimer et recommencer</button>
+                <button id="download-btn">📥 Télécharger</button>
+                <button id="reset-btn" class="secondary-btn">Recommencer</button>
             </div>
+            <canvas id="canvas" style="display:none;"></canvas>
         </main>
-
-        <section class="monetization">
-            <div class="kofi-card">
-                <p>Outil utile ?</p>
-                <a href="https://ko-fi.com/votrepseudo" target="_blank" class="btn-kofi">☕ M'offrir un café</a>
-            </div>
-            <div class="affiliate-card">
-                <p><strong>Besoin d'un logo ?</strong></p>
-                <a href="#" class="btn-affiliate">Créer un logo pro →</a>
-            </div>
-        </section>
-
-        <footer class="seo-content">
-            <h2>Détourage 100% Privé</h2>
-            <p>Contrairement aux autres sites, vos photos ne quittent pas votre ordinateur. Notre IA traite tout localement.</p>
-        </footer>
     </div>
 
     <script src="script.js"></script>
