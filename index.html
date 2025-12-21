@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Détourage Précis</title>
+    <title>ImageConvert Pro - Détourage Icônes & Logos</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
 </head>
 <body>
     <div class="container">
         <h1>🖼️ ImageConvert Pro</h1>
         <div class="converter-box">
             <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" id="upload-label" class="upload-label">📁 Choisir une image</label>
+            <label for="upload" id="upload-label" class="upload-label">📁 Sélectionner votre icône/image</label>
 
             <div id="preview-container" style="display:none;">
                 <div class="canvas-wrapper">
@@ -20,9 +19,10 @@
                 </div>
 
                 <div class="controls">
-                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan (Précis)</button>
-                    <p id="loading-msg" style="display:none;">⏳ Traitement IA en cours...</p>
-                    <button id="download-btn">📥 Télécharger</button>
+                    <p>Cliquez sur le bouton pour supprimer le fond blanc/uni :</p>
+                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer le fond uni</button>
+                    
+                    <button id="download-btn">📥 Télécharger en PNG</button>
                     <button onclick="location.reload()" class="secondary-btn">Recommencer</button>
                 </div>
             </div>
