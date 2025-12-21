@@ -320,3 +320,18 @@ body, .control-group, .preview-card, header, footer, .upload-section {
 .theme-toggle:active {
     transform: scale(0.95);
 }
+
+/* Adaptation du damier de transparence selon le thème */
+[data-theme="dark"] .canvas-wrapper {
+    background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
+                      linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #1e293b 75%), 
+                      linear-gradient(-45deg, transparent 75%, #1e293b 75%);
+    background-color: #0f172a; /* Fond du damier plus sombre */
+    border: 1px solid var(--primary);
+}
+
+[data-theme="dark"] .canvas-hint {
+    background: #1e293b;
+    color: var(--primary-light);
+}
