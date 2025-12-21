@@ -308,3 +308,15 @@ select {
 .subtitle strong {
     color: var(--text-main);
 }
+
+/* Transition globale douce sur les couleurs */
+body, .control-group, .preview-card, header, footer, .upload-section {
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effet au survol du bouton en haut à droite */
+.theme-toggle:active {
+    transform: scale(0.95);
+}
