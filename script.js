@@ -189,3 +189,14 @@ if (closeModal) {
 window.onclick = (event) => {
     if (event.target == helpModal) helpModal.style.display = "none";
 }
+// --- LOGIQUE DE PARTAGE ---
+const currentUrl = encodeURIComponent(window.location.href);
+const shareText = encodeURIComponent("Regarde cet outil gratuit pour détourer et redimensionner des images en ligne ! ✨");
+
+document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${shareText}%20${currentUrl}`;
+document.getElementById('share-tw').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${currentUrl}`;
+
+document.getElementById('share-link').onclick = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Lien copié dans le presse-papier ! 📋");
+};
