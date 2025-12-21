@@ -3,28 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convertisseur WebP Gratuit - Optimisez vos images</title>
+    <title>Convertisseur d'Images Gratuit - PNG, JPG, WebP</title>
+    <meta name="description" content="Convertissez vos images gratuitement en ligne. Supporte PNG, JPG et WebP. Rapide, sécurisé et sans installation.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <h1>⚡ Convertisseur WebP</h1>
-        <p>Convertissez instantanément vos images en WebP pour un site plus rapide.</p>
+        <header>
+            <h1>🖼️ ImageConvert Pro</h1>
+            <p>Convertissez vos images instantanément et gratuitement.</p>
+        </header>
 
-        <div class="converter-box">
+        <main class="converter-box">
             <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" class="upload-label">📁 Choisir une image (PNG, JPG)</label>
+            <label for="upload" class="upload-label">📁 Sélectionner une image</label>
+            
             <div id="preview-container" style="display:none;">
-                <canvas id="canvas"></canvas>
-                <button id="download-btn">📥 Télécharger en WebP</button>
-            </div>
-        </div>
+                <div class="file-details">
+                    <span id="file-name">image.png</span>
+                </div>
+                
+                <canvas id="canvas" style="display:none;"></canvas>
+                
+                <div class="options">
+                    <label for="format-select">Convertir en :</label>
+                    <select id="format-select">
+                        <option value="image/webp">WebP (.webp)</option>
+                        <option value="image/jpeg">JPEG (.jpg)</option>
+                        <option value="image/png">PNG (.png)</option>
+                    </select>
+                </div>
 
-        <div class="support-section">
-            <p>Cet outil est gratuit et sans publicité.</p>
-            <a href="https://ko-fi.com/ton-lien" class="kofi-button">☕ M'offrir un café</a>
-        </div>
+                <button id="download-btn">📥 Télécharger l'image convertie</button>
+            </div>
+        </main>
+
+        <section class="monetization">
+            <div class="kofi-card">
+                <p>Cet outil vous a aidé ?</p>
+                <a href="https://ko-fi.com/ton-pseudo" target="_blank" class="btn-kofi">☕ M'offrir un café</a>
+            </div>
+            <div class="affiliate-card">
+                <p><strong>Besoin d'un hébergement web ?</strong></p>
+                <a href="#" class="btn-affiliate">Découvrir l'offre partenaire</a>
+            </div>
+        </section>
+
+        <footer class="seo-content">
+            <h2>Pourquoi convertir vos images ?</h2>
+            <p>Le format <strong>WebP</strong> permet de réduire le poids de vos pages web sans perdre en qualité. Notre outil convertit vos <strong>PNG en JPG</strong> ou <strong>WebP en PNG</strong> directement dans votre navigateur pour une sécurité totale.</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>
