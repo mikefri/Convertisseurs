@@ -3,47 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Full Tool</title>
+    <title>ImageConvert Pro | Studio</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>🖼️ ImageConvert Pro</h1>
-        <div class="converter-box">
-            <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" id="upload-label" class="upload-label">📁 Sélectionner une image</label>
+    <div class="app-container">
+        <header>
+            <div class="logo">✨ ImageConvert <span>Pro</span></div>
+        </header>
 
-            <div id="preview-container" style="display:none;">
-                <div class="canvas-wrapper">
-                    <canvas id="main-canvas"></canvas>
+        <main>
+            <div id="drop-zone" class="upload-section">
+                <input type="file" id="upload" accept="image/*" hidden>
+                <label for="upload" class="upload-card">
+                    <div class="icon-circle">📂</div>
+                    <h2>Glissez votre image ici</h2>
+                    <p>ou cliquez pour parcourir vos fichiers</p>
+                    <span class="badge">Gratuit & Illimité</span>
+                </label>
+            </div>
+
+            <div id="preview-container" class="editor-grid" style="display:none;">
+                
+                <div class="preview-card">
+                    <div class="canvas-wrapper">
+                        <canvas id="main-canvas"></canvas>
+                    </div>
                 </div>
 
-                <div class="controls">
-                    <div class="tolerance-container">
-                        <label for="tolerance-range">
-                            Suppression du fond (Temps réel) : <span id="tolerance-value">80</span>
-                        </label>
-                        <input type="range" id="tolerance-range" min="0" max="255" value="80">
+                <div class="sidebar">
+                    <div class="control-group">
+                        <h3>🎨 Retouche IA</h3>
+                        <div class="tolerance-box">
+                            <div class="label-row">
+                                <span>Force du détourage</span>
+                                <b id="tolerance-value">80</b>
+                            </div>
+                            <input type="range" id="tolerance-range" min="0" max="255" value="80">
+                        </div>
                     </div>
 
-                    <div class="format-container" style="margin-bottom: 15px;">
-                        <label for="format-select" style="display:block; font-weight:bold; margin-bottom:5px;">Convertir en :</label>
-                        <select id="format-select" style="width:100%; padding:10px; border-radius:8px;">
-                            <option value="image/png">PNG (Garde la transparence)</option>
-                            <option value="image/jpeg">JPG (Fond blanc)</option>
-                            <option value="image/webp">WebP (Optimisé Web)</option>
+                    <div class="control-group">
+                        <h3>📦 Exportation</h3>
+                        <label>Format de sortie</label>
+                        <select id="format-select">
+                            <option value="image/png">PNG (Transparent)</option>
+                            <option value="image/jpeg">JPG (Fond Blanc)</option>
+                            <option value="image/webp">WebP (Optimisé)</option>
                         </select>
                     </div>
 
-                    <button id="download-btn">📥 Télécharger le résultat</button>
-                    
-                    <div class="btn-group">
-                        <button id="reset-image-btn" class="secondary-btn">🔄 Reset Curseur</button>
-                        <button onclick="location.reload()" class="secondary-btn" style="color:#e11d48">🗑️ Nouvelle image</button>
+                    <div class="actions">
+                        <button id="download-btn" class="btn-primary">📥 Télécharger</button>
+                        <div class="btn-row">
+                            <button id="reset-image-btn" class="btn-ghost">🔄 Reset</button>
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Effacer</button>
+                        </div>
                     </div>
                 </div>
+
             </div>
-        </div>
+        </main>
     </div>
     <script src="script.js"></script>
 </body>
