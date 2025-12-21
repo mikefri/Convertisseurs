@@ -45,16 +45,20 @@ function updateUIWithImage(img) {
 removeBgBtn.addEventListener('click', async () => {
     removeBgBtn.disabled = true;
     loadingMsg.style.display = 'block';
-    removeBgBtn.innerText = "⏳ Analyse en cours...";
+    removeBgBtn.innerText = "⏳ Chargement de l'IA...";
 
     try {
+        // Configuration pour éviter les erreurs de chargement réseau
+        const config = {
+            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/dist/",
+        };
+
         // Conversion du canvas actuel en Blob
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         
-        // Appel de l'IA (bibliothèque chargée dans le HTML)
-        const resultBlob = await imglyRemoveBackground(blob);
+        // Appel de l'IA avec la configuration
+        const resultBlob = await imglyRemoveBackground(blob, config);
         
-        // Affichage du résultat
         const newImg = new Image();
         newImg.onload = () => {
             updateUIWithImage(newImg);
@@ -64,10 +68,11 @@ removeBgBtn.addEventListener('click', async () => {
         };
         newImg.src = URL.createObjectURL(resultBlob);
     } catch (err) {
-        console.error(err);
-        alert("Erreur lors du traitement. Assurez-vous d'être connecté.");
+        console.error("Erreur détaillée:", err);
+        alert("L'IA a besoin de télécharger des fichiers (environ 30Mo). Vérifiez votre connexion et réessayez.");
         removeBgBtn.disabled = false;
         loadingMsg.style.display = 'none';
+        removeBgBtn.innerText = "✨ Supprimer l'arrière-plan (IA)";
     }
 });
 
