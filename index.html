@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Convertisseur d'Images Gratuit</title>
-    <meta name="description" content="Convertissez vos images gratuitement : PNG, JPG, WebP. Rapide, sécurisé et avec aperçu en temps réel.">
+    <title>ImageConvert Pro - Convertisseur & Détourage IA</title>
+    <meta name="description" content="Convertissez vos images et supprimez l'arrière-plan gratuitement avec notre IA intégrée. Supporte PNG, JPG et WebP.">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/dist/bundle.js"></script>
 </head>
 <body>
 
     <div class="container">
         <header>
             <h1>🖼️ ImageConvert Pro</h1>
-            <p>Convertissez vos images instantanément et gratuitement.</p>
+            <p>Convertissez et détourez vos images gratuitement grâce à l'IA.</p>
         </header>
 
         <main class="converter-box">
             <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" class="upload-label">📁 Sélectionner une image</label>
+            <label for="upload" id="upload-label" class="upload-label">📁 Sélectionner une image</label>
             
             <div id="preview-container" style="display:none;">
                 <div class="image-preview">
@@ -31,33 +32,38 @@
                 <canvas id="canvas" style="display:none;"></canvas>
                 
                 <div class="options">
-                    <label for="format-select">Convertir en :</label>
+                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan (IA)</button>
+                    <div id="loading-msg" style="display:none; color: #4f46e5; font-weight: bold; margin-bottom: 15px;">
+                        ⏳ Traitement IA en cours...
+                    </div>
+
+                    <label for="format-select">Format de sortie :</label>
                     <select id="format-select">
+                        <option value="image/png">PNG (Recommandé pour détourage)</option>
                         <option value="image/webp">WebP (.webp)</option>
                         <option value="image/jpeg">JPEG (.jpg)</option>
-                        <option value="image/png">PNG (.png)</option>
                     </select>
                 </div>
 
-                <button id="download-btn">📥 Télécharger l'image convertie</button>
-                <button id="reset-btn" class="secondary-btn">Effacer</button>
+                <button id="download-btn">📥 Télécharger le résultat</button>
+                <button id="reset-btn" class="secondary-btn">Supprimer et recommencer</button>
             </div>
         </main>
 
         <section class="monetization">
             <div class="kofi-card">
-                <p>Cet outil vous aide ?</p>
+                <p>Outil utile ?</p>
                 <a href="https://ko-fi.com/ton-pseudo" target="_blank" class="btn-kofi">☕ M'offrir un café</a>
             </div>
             <div class="affiliate-card">
-                <p><strong>Besoin d'un site web ?</strong></p>
-                <a href="#" class="btn-affiliate">Hébergeur recommandé →</a>
+                <p><strong>Site trop lent ?</strong></p>
+                <a href="#" class="btn-affiliate">Hébergeur Premium →</a>
             </div>
         </section>
 
         <footer class="seo-content">
-            <h2>Pourquoi convertir vos images ?</h2>
-            <p>Le format <strong>WebP</strong> est idéal pour le web car il réduit le poids sans perte de qualité. Notre outil permet de transformer vos <strong>PNG, JPG ou WebP</strong> en un clic pour booster votre SEO.</p>
+            <h2>Détourage et Conversion Gratuite</h2>
+            <p>Utilisez notre <strong>IA de suppression d'arrière-plan</strong> sans envoyer vos données sur un serveur. Tout se passe localement pour votre sécurité. Convertissez ensuite vos fichiers en <strong>WebP, PNG ou JPG</strong>.</p>
         </footer>
     </div>
 
