@@ -45,18 +45,19 @@ function updateUIWithImage(img) {
 removeBgBtn.addEventListener('click', async () => {
     removeBgBtn.disabled = true;
     loadingMsg.style.display = 'block';
-    removeBgBtn.innerText = "⏳ Chargement de l'IA...";
+    removeBgBtn.innerText = "⏳ Initialisation de l'IA...";
 
     try {
-        // Configuration pour éviter les erreurs de chargement réseau
+        // Configuration explicite des fichiers nécessaires
         const config = {
-            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal@latest/dist/",
+            publicPath: "https://unpkg.com/@imgly/background-removal@1.4.5/dist/",
+            debug: true // Permet de voir les erreurs exactes dans la console si ça échoue
         };
 
-        // Conversion du canvas actuel en Blob
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         
-        // Appel de l'IA avec la configuration
+        // Exécution du détourage
+        removeBgBtn.innerText = "🧠 Analyse de l'image...";
         const resultBlob = await imglyRemoveBackground(blob, config);
         
         const newImg = new Image();
@@ -69,7 +70,7 @@ removeBgBtn.addEventListener('click', async () => {
         newImg.src = URL.createObjectURL(resultBlob);
     } catch (err) {
         console.error("Erreur détaillée:", err);
-        alert("L'IA a besoin de télécharger des fichiers (environ 30Mo). Vérifiez votre connexion et réessayez.");
+        alert("L'IA n'a pas pu démarrer. Cela arrive parfois au premier chargement. Veuillez rafraîchir la page (F5) et réessayer.");
         removeBgBtn.disabled = false;
         loadingMsg.style.display = 'none';
         removeBgBtn.innerText = "✨ Supprimer l'arrière-plan (IA)";
