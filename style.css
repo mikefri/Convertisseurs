@@ -1,57 +1,49 @@
 :root {
     --primary: #6366f1;
-    --primary-hover: #4f46e5;
+    --primary-light: #818cf8;
     --bg: #f8fafc;
     --card: #ffffff;
     --text-main: #0f172a;
     --text-sub: #64748b;
-    --border: #e2e8f0;
+    --danger: #ef4444;
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: var(--bg);
-    color: var(--text-main);
     margin: 0;
     display: flex;
     justify-content: center;
-    min-height: 100vh;
     padding: 40px 20px;
 }
 
-.app-container { width: 100%; max-width: 1000px; }
+.app-container { width: 100%; max-width: 1100px; }
+header { text-align: center; margin-bottom: 30px; }
+.logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
+.logo span { color: var(--primary); }
 
-/* En-tête */
-header { text-align: center; margin-bottom: 40px; }
-h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin: 0; }
-h1 span { color: var(--primary); }
-
-/* Zone d'Upload */
+/* Zone Upload */
 .upload-section {
     background: var(--card);
-    border: 2px dashed #cbd5e1;
+    border: 3px dashed #cbd5e1;
     border-radius: 24px;
-    padding: 80px 20px;
+    padding: 60px 20px;
     text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
-.upload-section:hover { border-color: var(--primary); background: #f1f5f9; }
+.upload-section.highlight { border-color: var(--primary); background: #eef2ff; transform: scale(1.01); }
+.upload-card { cursor: pointer; display: block; }
+.icon-circle { font-size: 40px; margin-bottom: 15px; }
+.badge { background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 
-/* Grid de l'éditeur */
-.editor-grid {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 32px;
-    align-items: start;
-}
+/* Layout Editeur */
+.editor-grid { display: grid; grid-template-columns: 1fr 340px; gap: 30px; }
 
-/* Zone d'aperçu (Image) */
 .preview-card {
     background: var(--card);
-    padding: 24px;
     border-radius: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,64 +51,44 @@ h1 span { color: var(--primary); }
 }
 
 .canvas-wrapper {
-    position: relative;
     border-radius: 12px;
     overflow: hidden;
-    /* Petit damier discret uniquement pour voir la transparence */
-    background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-                      linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-                      linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
-                      linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    background-image: linear-gradient(45deg, #eee 25%, transparent 25%), 
+                      linear-gradient(-45deg, #eee 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #eee 75%), 
+                      linear-gradient(-45deg, transparent 75%, #eee 75%);
     background-size: 16px 16px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-canvas {
-    max-width: 100%;
-    max-height: 70vh;
-    display: block;
-    height: auto;
-}
+canvas { max-width: 100%; height: auto; display: block; }
 
-/* Sidebar de contrôle */
+/* Sidebar */
 .sidebar { display: flex; flex-direction: column; gap: 20px; }
+.control-group { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.control-group h3 { margin: 0 0 15px 0; font-size: 13px; text-transform: uppercase; color: var(--text-sub); letter-spacing: 0.5px; }
 
-.control-group {
-    background: var(--card);
-    padding: 24px;
-    border-radius: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.control-group h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); margin-top: 0; }
-
-.label-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 600; }
-
+.label-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 600; font-size: 14px; }
 input[type=range] { width: 100%; accent-color: var(--primary); cursor: pointer; }
 
-select {
-    width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border);
-    font-weight: 600; background: #f8fafc; cursor: pointer;
-}
+/* Resize Inputs */
+.resize-inputs { display: flex; gap: 10px; margin-bottom: 12px; }
+.input-box { flex: 1; }
+.input-box label { display: block; font-size: 10px; color: var(--text-sub); margin-bottom: 4px; font-weight: 700; }
+.input-box input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; font-weight: 700; font-size: 14px; }
+.checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-sub); cursor: pointer; }
 
-/* Boutons */
+select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-family: inherit; font-weight: 600; cursor: pointer; }
+
+/* Buttons */
 .btn-primary {
-    background: var(--primary);
-    color: white; border: none; padding: 18px; border-radius: 16px;
-    font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s;
+    background: var(--primary); color: white; border: none; width: 100%; padding: 18px;
+    border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
 }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+.btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); }
+.btn-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-ghost { flex: 1; background: #fff; border: 1px solid #e2e8f0; padding: 12px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 12px; transition: 0.2s; }
+.btn-ghost.danger:hover { color: var(--danger); border-color: var(--danger); background: #fff1f2; }
 
-.btn-ghost {
-    background: none; border: 1px solid var(--border); padding: 10px;
-    border-radius: 12px; cursor: pointer; font-weight: 600; color: var(--text-sub);
-}
-.btn-ghost:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
-
-@media (max-width: 850px) { .editor-grid { grid-template-columns: 1fr; } }
-
-.upload-section.highlight {
-    border-color: var(--primary);
-    background-color: #eef2ff;
-    transform: scale(1.02);
-}
+@media (max-width: 900px) { .editor-grid { grid-template-columns: 1fr; } }
