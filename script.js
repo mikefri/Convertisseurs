@@ -206,6 +206,8 @@ document.getElementById('share-link').onclick = () => {
     alert("Lien copié dans le presse-papier ! 📋");
 };
 // --- LOGIQUE THÈME SOMBRE ---
+const themeBtn = document.getElementById('theme-switch');
+const themeIcon = document.getElementById('theme-icon');
 const themeText = document.getElementById('theme-text');
 const currentTheme = localStorage.getItem('theme');
 
