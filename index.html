@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convertisseur d'Images Gratuit - PNG, JPG, WebP</title>
-    <meta name="description" content="Convertissez vos images gratuitement en ligne. Supporte PNG, JPG et WebP. Rapide, sécurisé et sans installation.">
+    <title>ImageConvert Pro - Convertisseur d'Images Gratuit</title>
+    <meta name="description" content="Convertissez vos images gratuitement : PNG, JPG, WebP. Rapide, sécurisé et avec aperçu en temps réel.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,6 +20,10 @@
             <label for="upload" class="upload-label">📁 Sélectionner une image</label>
             
             <div id="preview-container" style="display:none;">
+                <div class="image-preview">
+                    <img id="image-display" src="" alt="Aperçu">
+                </div>
+
                 <div class="file-details">
                     <span id="file-name">image.png</span>
                 </div>
@@ -36,23 +40,24 @@
                 </div>
 
                 <button id="download-btn">📥 Télécharger l'image convertie</button>
+                <button id="reset-btn" class="secondary-btn">Effacer</button>
             </div>
         </main>
 
         <section class="monetization">
             <div class="kofi-card">
-                <p>Cet outil vous a aidé ?</p>
+                <p>Cet outil vous aide ?</p>
                 <a href="https://ko-fi.com/ton-pseudo" target="_blank" class="btn-kofi">☕ M'offrir un café</a>
             </div>
             <div class="affiliate-card">
-                <p><strong>Besoin d'un hébergement web ?</strong></p>
-                <a href="#" class="btn-affiliate">Découvrir l'offre partenaire</a>
+                <p><strong>Besoin d'un site web ?</strong></p>
+                <a href="#" class="btn-affiliate">Hébergeur recommandé →</a>
             </div>
         </section>
 
         <footer class="seo-content">
             <h2>Pourquoi convertir vos images ?</h2>
-            <p>Le format <strong>WebP</strong> permet de réduire le poids de vos pages web sans perdre en qualité. Notre outil convertit vos <strong>PNG en JPG</strong> ou <strong>WebP en PNG</strong> directement dans votre navigateur pour une sécurité totale.</p>
+            <p>Le format <strong>WebP</strong> est idéal pour le web car il réduit le poids sans perte de qualité. Notre outil permet de transformer vos <strong>PNG, JPG ou WebP</strong> en un clic pour booster votre SEO.</p>
         </footer>
     </div>
 
