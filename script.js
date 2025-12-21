@@ -206,25 +206,27 @@ document.getElementById('share-link').onclick = () => {
     alert("Lien copié dans le presse-papier ! 📋");
 };
 // --- LOGIQUE THÈME SOMBRE ---
-const themeBtn = document.getElementById('theme-switch');
+const themeText = document.getElementById('theme-text');
 const currentTheme = localStorage.getItem('theme');
 
-// Appliquer le thème sauvegardé au chargement
-if (currentTheme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    themeBtn.innerText = "☀️ Mode Clair";
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeIcon.innerText = "☀️";
+        themeText.innerText = "Mode Clair";
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.innerText = "🌙";
+        themeText.innerText = "Mode Sombre";
+    }
 }
 
+// Initialisation
+if (currentTheme === 'dark') applyTheme('dark');
+
 themeBtn.addEventListener('click', () => {
-    let theme = document.documentElement.getAttribute('data-theme');
-    
-    if (theme === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
-        themeBtn.innerText = "🌙 Mode Sombre";
-        localStorage.setItem('theme', 'light');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeBtn.innerText = "☀️ Mode Clair";
-        localStorage.setItem('theme', 'dark');
-    }
+    const isDark = document.documentElement.hasAttribute('data-theme');
+    const newTheme = isDark ? 'light' : 'dark';
+    applyTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
 });
