@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://mikefri.github.io/Convertisseurs/sitemap.xml
