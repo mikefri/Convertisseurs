@@ -2,50 +2,58 @@ const upload = document.getElementById('upload');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const downloadBtn = document.getElementById('download-btn');
+const resetBtn = document.getElementById('reset-btn');
 const formatSelect = document.getElementById('format-select');
 const previewContainer = document.getElementById('preview-container');
 const fileNameDisplay = document.getElementById('file-name');
+const imageDisplay = document.getElementById('image-display');
 
 let currentFileName = "";
 
-// 1. Gérer l'upload du fichier
+// Chargement de l'image
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Récupérer le nom du fichier sans extension
     currentFileName = file.name.split('.').slice(0, -1).join('.');
-    fileNameDisplay.innerText = `Fichier prêt : ${file.name}`;
+    fileNameDisplay.innerText = `Fichier : ${file.name}`;
 
     const reader = new FileReader();
     reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
-            // Préparer le canvas avec les dimensions de l'image
+            // Afficher l'aperçu visuel
+            imageDisplay.src = event.target.result;
+
+            // Préparer le canvas pour la conversion
             canvas.width = img.width;
             canvas.height = img.height;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0);
+            
             previewContainer.style.display = 'block';
+            upload.parentElement.querySelector('.upload-label').style.display = 'none';
         };
         img.src = event.target.result;
     };
     reader.readAsDataURL(file);
 });
 
-// 2. Gérer la conversion et le téléchargement
+// Conversion et Téléchargement
 downloadBtn.addEventListener('click', () => {
-    const format = formatSelect.value; // ex: image/jpeg
-    const extension = format.split('/')[1]; // ex: jpeg
+    const format = formatSelect.value;
+    const extension = format.split('/')[1].replace('jpeg', 'jpg');
     
-    // Créer l'image convertie (Qualité 0.9 pour un bon ratio poids/qualité)
     const dataUrl = canvas.toDataURL(format, 0.9);
     
-    // Déclencher le téléchargement
     const link = document.createElement('a');
     link.href = dataUrl;
     link.download = `${currentFileName}-converti.${extension}`;
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+});
+
+// Bouton Effacer
+resetBtn.addEventListener('click', () => {
+    previewContainer.style.display = 'none';
+    upload.parentElement.querySelector('.upload-label').style.display = 'inline-block';
+    upload.value = "";
 });
