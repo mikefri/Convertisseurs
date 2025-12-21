@@ -1,3 +1,8 @@
+/**
+ * ImageConvert Pro
+ * Created by Micfri
+ * Description: Studio local de traitement d'image (Détourage, Resize, Format)
+ */
 const upload = document.getElementById('upload');
 const dropZone = document.getElementById('drop-zone');
 const canvas = document.getElementById('main-canvas');
