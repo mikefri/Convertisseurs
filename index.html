@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Temps Réel</title>
+    <title>ImageConvert Pro - Full Tool</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,15 +21,26 @@
                 <div class="controls">
                     <div class="tolerance-container">
                         <label for="tolerance-range">
-                            Ajustement en temps réel : <span id="tolerance-value">80</span>
+                            Suppression du fond (Temps réel) : <span id="tolerance-value">80</span>
                         </label>
-                        <input type="range" id="tolerance-range" min="0" max="200" value="80">
-                        <small>Glissez pour effacer les traits rouges instantanément.</small>
+                        <input type="range" id="tolerance-range" min="0" max="255" value="80">
                     </div>
 
-                    <button id="download-btn">📥 Télécharger en PNG</button>
-                    <button id="reset-image-btn" class="secondary-btn">🔄 Réinitialiser l'image</button>
-                    <button onclick="location.reload()" class="secondary-btn" style="color:red">🗑️ Supprimer tout</button>
+                    <div class="format-container" style="margin-bottom: 15px;">
+                        <label for="format-select" style="display:block; font-weight:bold; margin-bottom:5px;">Convertir en :</label>
+                        <select id="format-select" style="width:100%; padding:10px; border-radius:8px;">
+                            <option value="image/png">PNG (Garde la transparence)</option>
+                            <option value="image/jpeg">JPG (Fond blanc)</option>
+                            <option value="image/webp">WebP (Optimisé Web)</option>
+                        </select>
+                    </div>
+
+                    <button id="download-btn">📥 Télécharger le résultat</button>
+                    
+                    <div class="btn-group">
+                        <button id="reset-image-btn" class="secondary-btn">🔄 Reset Curseur</button>
+                        <button onclick="location.reload()" class="secondary-btn" style="color:#e11d48">🗑️ Nouvelle image</button>
+                    </div>
                 </div>
             </div>
         </div>

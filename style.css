@@ -87,3 +87,23 @@ input[type=range] { width: 100%; cursor: pointer; accent-color: var(--primary); 
     background: none; border: none; color: #64748b;
     text-decoration: underline; cursor: pointer; margin-top: 15px;
 }
+
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+select {
+    border: 2px solid #e2e8f0;
+    background: white;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+}

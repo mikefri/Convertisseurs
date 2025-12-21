@@ -4,18 +4,26 @@ const ctx = canvas.getContext('2d', { willReadFrequently: true });
 const previewContainer = document.getElementById('preview-container');
 const toleranceRange = document.getElementById('tolerance-range');
 const toleranceValue = document.getElementById('tolerance-value');
+const formatSelect = document.getElementById('format-select');
 const resetBtn = document.getElementById('reset-image-btn');
+const downloadBtn = document.getElementById('download-btn');
 
 let imgElement = null;
 
-// FONCTION DE DÉTOURAGE (Appelée en temps réel)
+// Mise à jour de l'affichage du chiffre de tolérance
+toleranceRange.addEventListener('input', () => {
+    toleranceValue.innerText = toleranceRange.value;
+    processImage(); // Rendu immédiat
+});
+
+// Fonction principale de traitement
 function processImage() {
     if (!imgElement) return;
 
     const width = canvas.width;
     const height = canvas.height;
 
-    // 1. On redessine toujours l'original d'abord
+    // On redessine l'original pour appliquer le nouveau réglage
     ctx.clearRect(0, 0, width, height);
     ctx.drawImage(imgElement, 0, 0);
 
@@ -23,10 +31,9 @@ function processImage() {
     const pixels = imgData.data;
     const tolerance = parseInt(toleranceRange.value);
     
-    // Couleur du fond (haut-gauche)
+    // Couleur de référence (haut-gauche)
     const targetR = pixels[0], targetG = pixels[1], targetB = pixels[2];
 
-    // 2. Analyse pixel par pixel
     for (let i = 0; i < pixels.length; i += 4) {
         const dist = Math.sqrt(
             Math.pow(pixels[i] - targetR, 2) +
@@ -38,17 +45,10 @@ function processImage() {
             pixels[i + 3] = 0; // Transparence
         }
     }
-
     ctx.putImageData(imgData, 0, 0);
 }
 
-// ÉVÈNEMENT : Modification du curseur
-toleranceRange.addEventListener('input', () => {
-    toleranceValue.innerText = toleranceRange.value;
-    processImage(); // On traite l'image dès que le curseur bouge
-});
-
-// ÉVÈNEMENT : Chargement de l'image
+// Chargement de l'image
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -58,7 +58,7 @@ upload.addEventListener('change', (e) => {
         imgElement.onload = () => {
             canvas.width = imgElement.width;
             canvas.height = imgElement.height;
-            processImage(); // Premier rendu
+            processImage();
             previewContainer.style.display = 'block';
             document.getElementById('upload-label').style.display = 'none';
         };
@@ -67,17 +67,38 @@ upload.addEventListener('change', (e) => {
     reader.readAsDataURL(file);
 });
 
-// BOUTON REVENIR EN ARRIÈRE (Réinitialiser)
+// Réinitialisation du curseur
 resetBtn.addEventListener('click', () => {
     toleranceRange.value = 0;
     toleranceValue.innerText = "0";
     processImage();
 });
 
-// TÉLÉCHARGEMENT
-document.getElementById('download-btn').addEventListener('click', () => {
-    const link = document.createElement('a');
-    link.download = "image_pro.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+// Téléchargement avec conversion de format
+downloadBtn.addEventListener('click', () => {
+    const format = formatSelect.value; // ex: image/jpeg ou image/png
+    const extension = format.split('/')[1]; // ex: png
+    
+    // Si l'utilisateur choisit JPG, on doit remplir le fond transparent en blanc
+    if (format === 'image/jpeg') {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        tempCtx.fillStyle = "#FFFFFF"; // Fond blanc
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.drawImage(canvas, 0, 0);
+        
+        const link = document.createElement('a');
+        link.download = `image_convertie.${extension}`;
+        link.href = tempCanvas.toDataURL(format, 0.9); // Qualité 90% pour JPG
+        link.click();
+    } else {
+        // Pour PNG et WebP qui gèrent la transparence
+        const link = document.createElement('a');
+        link.download = `image_convertie.${extension}`;
+        link.href = canvas.toDataURL(format);
+        link.click();
+    }
 });
