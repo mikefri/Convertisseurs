@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Détourage Icônes & Logos</title>
+    <title>ImageConvert Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,8 @@
         <h1>🖼️ ImageConvert Pro</h1>
         <div class="converter-box">
             <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" id="upload-label" class="upload-label">📁 Sélectionner votre icône/image</label>
+            
+            <label for="upload" id="upload-label" class="upload-label">📁 Sélectionner une image</label>
 
             <div id="preview-container" style="display:none;">
                 <div class="canvas-wrapper">
@@ -19,9 +20,7 @@
                 </div>
 
                 <div class="controls">
-                    <p>Cliquez sur le bouton pour supprimer le fond blanc/uni :</p>
-                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer le fond uni</button>
-                    
+                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer le fond (Bords lisses)</button>
                     <button id="download-btn">📥 Télécharger en PNG</button>
                     <button onclick="location.reload()" class="secondary-btn">Recommencer</button>
                 </div>
