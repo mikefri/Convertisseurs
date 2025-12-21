@@ -129,3 +129,16 @@ downloadBtn.addEventListener('click', () => {
     link.href = finalCanvas.toDataURL(format, 0.95);
     link.click();
 });
+
+// --- LOGIQUE DE LA MODALE D'AIDE ---
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
+const closeModal = document.querySelector('.close-modal');
+
+helpBtn.onclick = () => helpModal.style.display = "flex";
+closeModal.onclick = () => helpModal.style.display = "none";
+
+// Fermer si on clique en dehors de la fenêtre blanche
+window.onclick = (event) => {
+    if (event.target == helpModal) helpModal.style.display = "none";
+}

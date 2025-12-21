@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro | Studio</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ImageConvert Pro | Studio de Retouche & Conversion</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="app-container">
         <header>
             <div class="logo">✨ ImageConvert <span>Pro</span></div>
+            <p class="subtitle">Détourage IA & Conversion Multi-format</p>
         </header>
 
         <main>
@@ -19,12 +21,18 @@
                 <label for="upload" class="upload-card">
                     <div class="icon-circle">📂</div>
                     <h2>Glissez votre image ici</h2>
-                    <p>ou cliquez pour parcourir</p>
-                    <span class="badge">PNG, JPG, WEBP, BMP</span>
+                    <p>ou cliquez pour parcourir vos fichiers</p>
+                    <div class="format-badges">
+                        <span class="badge">PNG</span>
+                        <span class="badge">JPG</span>
+                        <span class="badge">WEBP</span>
+                        <span class="badge">BMP</span>
+                    </div>
                 </label>
             </div>
 
             <div id="preview-container" class="editor-grid" style="display:none;">
+                
                 <div class="preview-card">
                     <div class="canvas-wrapper">
                         <canvas id="main-canvas"></canvas>
@@ -32,54 +40,84 @@
                 </div>
 
                 <div class="sidebar">
+                    
                     <div class="control-group">
-                        <h3>🎨 Retouche IA</h3>
+                        <h3>🎨 Retouche intelligente</h3>
                         <div class="label-row">
-                            <span>Suppression fond</span>
+                            <span>Supprimer le fond</span>
                             <b id="tolerance-value">80</b>
                         </div>
                         <input type="range" id="tolerance-range" min="0" max="255" value="80">
+                        <small class="hint">Ajustez pour effacer les pixels parasites.</small>
                     </div>
 
                     <div class="control-group">
-                        <h3>📏 Dimensions (px)</h3>
+                        <h3>📏 Dimensions (Pixels)</h3>
                         <div class="resize-inputs">
                             <div class="input-box">
                                 <label>Largeur</label>
-                                <input type="number" id="resize-w">
+                                <input type="number" id="resize-w" placeholder="L">
                             </div>
                             <div class="input-box">
                                 <label>Hauteur</label>
-                                <input type="number" id="resize-h">
+                                <input type="number" id="resize-h" placeholder="H">
                             </div>
                         </div>
                         <label class="checkbox-label">
-                            <input type="checkbox" id="aspect-ratio" checked> Garder les proportions
+                            <input type="checkbox" id="aspect-ratio" checked> Conserver les proportions
                         </label>
                     </div>
 
                     <div class="control-group">
                         <h3>📦 Exportation</h3>
+                        <label for="format-select" class="field-label">Format de sortie</label>
                         <select id="format-select">
-                            <option value="image/png">PNG (Transparent)</option>
-                            <option value="image/jpeg">JPG (Fond Blanc)</option>
-                            <option value="image/webp">WebP (Optimisé)</option>
-                            <option value="image/bmp">BMP (Standard)</option>
+                            <option value="image/png">PNG (Transparence préservée)</option>
+                            <option value="image/jpeg">JPG (Fond blanc, léger)</option>
+                            <option value="image/webp">WebP (Optimisé Web)</option>
+                            <option value="image/bmp">BMP (Qualité Windows)</option>
                         </select>
-                        <div class="file-info">Poids estimé : <span id="file-size">--</span></div>
+                        <div class="file-info">
+                            Poids estimé : <span id="file-size">--</span>
+                        </div>
                     </div>
 
                     <div class="actions">
-                        <button id="download-btn" class="btn-primary">📥 Télécharger</button>
+                        <button id="download-btn" class="btn-primary">📥 Télécharger l'image</button>
                         <div class="btn-row">
-                            <button id="reset-image-btn" class="btn-ghost">🔄 Reset</button>
-                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouveau</button>
+                            <button id="reset-image-btn" class="btn-ghost">🔄 Réinitialiser</button>
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouvelle image</button>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> </div>
         </main>
+
+        <button id="help-btn" class="help-trigger" title="Besoin d'aide ?">?</button>
+
+        <div id="help-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>💡 Comment ça marche ?</h2>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <h4>🎯 Détourage</h4>
+                        <p>Le curseur utilise la couleur du coin supérieur gauche comme référence pour supprimer le fond.</p>
+                    </div>
+                    <div class="help-item">
+                        <h4>📏 Redimensionnement</h4>
+                        <p>Tapez une valeur et l'aperçu s'adapte immédiatement. Utile pour créer des icônes !</p>
+                    </div>
+                    <div class="help-item">
+                        <h4>💾 Formats</h4>
+                        <p>Utilisez le <b>PNG</b> pour garder le fond transparent après détourage.</p>
+                    </div>
+                </div>
+                <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">J'ai compris</button>
+            </div>
+        </div>
+
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
