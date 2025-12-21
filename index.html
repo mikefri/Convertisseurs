@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageConvert Pro - Détourage IA</title>
+    <title>ImageConvert Pro - Détourage Précis</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
 </head>
 <body>
     <div class="container">
         <h1>🖼️ ImageConvert Pro</h1>
-        
         <div class="converter-box">
             <input type="file" id="upload" accept="image/*" hidden>
-            <label for="upload" id="upload-label" class="upload-label">📁 Choisir une photo</label>
+            <label for="upload" id="upload-label" class="upload-label">📁 Choisir une image</label>
 
             <div id="preview-container" style="display:none;">
                 <div class="canvas-wrapper">
@@ -22,16 +20,10 @@
                 </div>
 
                 <div class="controls">
-                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan</button>
-                    <p id="loading-msg" style="display:none;">⏳ Analyse en cours...</p>
-                    
-                    <select id="format-select">
-                        <option value="image/png">Format PNG (Transparent)</option>
-                        <option value="image/jpeg">Format JPG (Fond blanc)</option>
-                    </select>
-                    
+                    <button id="remove-bg-btn" class="special-btn">✨ Supprimer l'arrière-plan (Précis)</button>
+                    <p id="loading-msg" style="display:none;">⏳ Traitement IA en cours...</p>
                     <button id="download-btn">📥 Télécharger</button>
-                    <button onclick="location.reload()" class="secondary-btn">Effacer tout</button>
+                    <button onclick="location.reload()" class="secondary-btn">Recommencer</button>
                 </div>
             </div>
         </div>
