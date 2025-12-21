@@ -38,7 +38,7 @@ removeBgBtn.addEventListener('click', () => {
     const targetB = data[startIdx + 2];
 
     // Tolérance : augmente cette valeur (ex: 80) si les traits rouges ne partent pas
-    const tolerance = 50; 
+    const tolerance = 100; 
     
     // Tableau pour marquer les pixels déjà visités
     const visited = new Uint8Array(width * height);
