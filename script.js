@@ -12,7 +12,7 @@ const fileNameDisplay = document.getElementById('file-name');
 
 let currentFileName = "";
 
-// 1. Gérer l'importation
+// 1. Importation et affichage de l'image
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -23,9 +23,7 @@ upload.addEventListener('change', (e) => {
     const reader = new FileReader();
     reader.onload = (event) => {
         const img = new Image();
-        img.onload = () => {
-            updateUIWithImage(img);
-        };
+        img.onload = () => updateUIWithImage(img);
         img.src = event.target.result;
     };
     reader.readAsDataURL(file);
@@ -41,23 +39,22 @@ function updateUIWithImage(img) {
     uploadLabel.style.display = 'none';
 }
 
-// 2. Suppression de l'arrière-plan avec imgly
+// 2. Suppression de l'arrière-plan (IA)
 removeBgBtn.addEventListener('click', async () => {
     removeBgBtn.disabled = true;
     loadingMsg.style.display = 'block';
-    removeBgBtn.innerText = "⏳ Initialisation de l'IA...";
+    removeBgBtn.innerText = "⏳ Préparation de l'IA...";
 
     try {
-        // Configuration explicite des fichiers nécessaires
+        // Configuration pour forcer le téléchargement des modèles d'IA
         const config = {
             publicPath: "https://unpkg.com/@imgly/background-removal@1.4.5/dist/",
-            debug: true // Permet de voir les erreurs exactes dans la console si ça échoue
         };
 
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        removeBgBtn.innerText = "🧠 Analyse en cours...";
         
-        // Exécution du détourage
-        removeBgBtn.innerText = "🧠 Analyse de l'image...";
+        // Exécution du détourage local
         const resultBlob = await imglyRemoveBackground(blob, config);
         
         const newImg = new Image();
@@ -69,15 +66,15 @@ removeBgBtn.addEventListener('click', async () => {
         };
         newImg.src = URL.createObjectURL(resultBlob);
     } catch (err) {
-        console.error("Erreur détaillée:", err);
-        alert("L'IA n'a pas pu démarrer. Cela arrive parfois au premier chargement. Veuillez rafraîchir la page (F5) et réessayer.");
+        console.error("Erreur IA:", err);
+        alert("L'IA n'a pas pu se charger (problème de connexion ou de navigateur). Essayez de rafraîchir la page.");
         removeBgBtn.disabled = false;
         loadingMsg.style.display = 'none';
         removeBgBtn.innerText = "✨ Supprimer l'arrière-plan (IA)";
     }
 });
 
-// 3. Téléchargement
+// 3. Téléchargement du fichier final
 downloadBtn.addEventListener('click', () => {
     const format = document.getElementById('format-select').value;
     const extension = format.split('/')[1].replace('jpeg', 'jpg');
@@ -88,7 +85,7 @@ downloadBtn.addEventListener('click', () => {
     link.click();
 });
 
-// 4. Reset
+// 4. Reset de l'interface
 resetBtn.addEventListener('click', () => {
     previewContainer.style.display = 'none';
     uploadLabel.style.display = 'inline-block';
