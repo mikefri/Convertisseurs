@@ -9,6 +9,7 @@ const formatSelect = document.getElementById('format-select');
 const downloadBtn = document.getElementById('download-btn');
 const resetBtn = document.getElementById('reset-image-btn');
 const fileSizeDisplay = document.getElementById('file-size');
+const colorPreview = document.getElementById('color-preview'); // La pastille ajoutée au HTML
 
 const inputW = document.getElementById('resize-w');
 const inputH = document.getElementById('resize-h');
@@ -16,6 +17,7 @@ const checkRatio = document.getElementById('aspect-ratio');
 
 let imgElement = null;
 let ratio = 1;
+let targetColor = null; // Stocke la couleur [R, G, B] sélectionnée par l'utilisateur
 
 // --- GESTION FICHIERS ---
 function handleFile(file) {
@@ -27,6 +29,7 @@ function handleFile(file) {
             ratio = imgElement.width / imgElement.height;
             inputW.value = imgElement.width;
             inputH.value = imgElement.height;
+            targetColor = null; // Reset de la pipette lors d'un nouvel import
             dropZone.style.display = 'none';
             previewContainer.style.display = 'grid';
             processImage();
@@ -44,13 +47,32 @@ dropZone.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.data
 ['dragenter', 'dragover'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.add('highlight')));
 ['dragleave', 'drop'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.remove('highlight')));
 
+// --- GESTION DE LA PIPETTE (CLIC SUR IMAGE) ---
+canvas.addEventListener('click', (e) => {
+    if (!imgElement) return;
+
+    // Calcul de la position réelle sur le canvas (gestion du responsive)
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    // On récupère la couleur du pixel cliqué sur le canvas original (non traité)
+    // Pour être précis, on redessine temporairement l'original si nécessaire ou on lit avant le détourage
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    targetColor = [pixel[0], pixel[1], pixel[2]];
+    
+    processImage();
+});
+
 // --- REDIMENSIONNEMENT TEMPS RÉEL ---
 function updateFromWidth() {
-    if(checkRatio.checked) inputH.value = Math.round(inputW.value / ratio);
+    if(checkRatio.checked && imgElement) inputH.value = Math.round(inputW.value / ratio);
     processImage();
 }
 function updateFromHeight() {
-    if(checkRatio.checked) inputW.value = Math.round(inputH.value * ratio);
+    if(checkRatio.checked && imgElement) inputW.value = Math.round(inputH.value * ratio);
     processImage();
 }
 
@@ -68,22 +90,42 @@ function processImage() {
     canvas.width = w;
     canvas.height = h;
 
-    // Dessin avec redimensionnement
+    // 1. Dessiner l'image originale redimensionnée
     ctx.clearRect(0, 0, w, h);
     ctx.drawImage(imgElement, 0, 0, w, h);
 
+    // 2. Récupérer les données pour le détourage
     const imgData = ctx.getImageData(0, 0, w, h);
     const data = imgData.data;
     const tolerance = parseInt(toleranceRange.value);
-    const targetR = data[0], targetG = data[1], targetB = data[2];
 
+    // Définition de la couleur cible (Pipette ou pixel 0,0)
+    let rT, gT, bT;
+    if (targetColor) {
+        [rT, gT, bT] = targetColor;
+    } else {
+        rT = data[0]; gT = data[1]; bT = data[2];
+    }
+
+    // Mise à jour visuelle de la pastille dans la sidebar
+    if (colorPreview) {
+        colorPreview.style.backgroundColor = `rgb(${rT}, ${gT}, ${bT})`;
+    }
+
+    // 3. Algorithme de suppression de couleur
     for (let i = 0; i < data.length; i += 4) {
-        const dist = Math.sqrt(Math.pow(data[i]-targetR,2) + Math.pow(data[i+1]-targetG,2) + Math.pow(data[i+2]-targetB,2));
-        if (dist < tolerance) data[i+3] = 0;
+        const dist = Math.sqrt(
+            Math.pow(data[i] - rT, 2) +
+            Math.pow(data[i + 1] - gT, 2) +
+            Math.pow(data[i + 2] - bT, 2)
+        );
+        if (dist < tolerance) {
+            data[i + 3] = 0; // Transparence
+        }
     }
     ctx.putImageData(imgData, 0, 0);
 
-    // Estimation du poids
+    // 4. Estimation du poids
     estimateSize();
 }
 
@@ -100,10 +142,13 @@ toleranceRange.addEventListener('input', () => {
 });
 
 resetBtn.addEventListener('click', () => {
+    targetColor = null; // Reset de la pipette
     toleranceRange.value = 80;
     toleranceValue.innerText = "80";
-    inputW.value = imgElement.width;
-    inputH.value = imgElement.height;
+    if (imgElement) {
+        inputW.value = imgElement.width;
+        inputH.value = imgElement.height;
+    }
     processImage();
 });
 
@@ -112,7 +157,6 @@ downloadBtn.addEventListener('click', () => {
     const format = formatSelect.value;
     const ext = format.split('/')[1];
     
-    // Pour JPG/BMP on crée un canvas final avec fond blanc (pour éviter le fond noir du format)
     let finalCanvas = canvas;
     if (format === 'image/jpeg' || format === 'image/bmp') {
         finalCanvas = document.createElement('canvas');
@@ -135,10 +179,13 @@ const helpBtn = document.getElementById('help-btn');
 const helpModal = document.getElementById('help-modal');
 const closeModal = document.querySelector('.close-modal');
 
-helpBtn.onclick = () => helpModal.style.display = "flex";
-closeModal.onclick = () => helpModal.style.display = "none";
+if (helpBtn) {
+    helpBtn.onclick = () => helpModal.style.display = "flex";
+}
+if (closeModal) {
+    closeModal.onclick = () => helpModal.style.display = "none";
+}
 
-// Fermer si on clique en dehors de la fenêtre blanche
 window.onclick = (event) => {
     if (event.target == helpModal) helpModal.style.display = "none";
 }

@@ -32,17 +32,20 @@
             </div>
 
             <div id="preview-container" class="editor-grid" style="display:none;">
-                
                 <div class="preview-card">
                     <div class="canvas-wrapper">
                         <canvas id="main-canvas"></canvas>
                     </div>
+                    <p class="canvas-hint">🎯 Cliquez sur l'image pour choisir la couleur à effacer</p>
                 </div>
 
                 <div class="sidebar">
-                    
                     <div class="control-group">
                         <h3>🎨 Retouche intelligente</h3>
+                        <div class="label-row">
+                            <span>Couleur ciblée</span>
+                            <div id="color-preview" title="Couleur actuellement sélectionnée"></div>
+                        </div>
                         <div class="label-row">
                             <span>Supprimer le fond</span>
                             <b id="tolerance-value">80</b>
@@ -89,7 +92,8 @@
                             <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouvelle image</button>
                         </div>
                     </div>
-                </div> </div>
+                </div> 
+            </div>
         </main>
 
         <button id="help-btn" class="help-trigger" title="Besoin d'aide ?">?</button>
@@ -100,22 +104,21 @@
                 <h2>💡 Comment ça marche ?</h2>
                 <div class="help-grid">
                     <div class="help-item">
-                        <h4>🎯 Détourage</h4>
-                        <p>Le curseur utilise la couleur du coin supérieur gauche comme référence pour supprimer le fond.</p>
+                        <h4>🎯 Pipette magique</h4>
+                        <p>Par défaut, l'outil efface le fond. Vous pouvez <b>cliquer n'importe où sur l'image</b> pour choisir une autre couleur à supprimer.</p>
                     </div>
                     <div class="help-item">
-                        <h4>📏 Redimensionnement</h4>
-                        <p>Tapez une valeur et l'aperçu s'adapte immédiatement. Utile pour créer des icônes !</p>
+                        <h4>📏 Taille sur mesure</h4>
+                        <p>Modifiez les pixels pour redimensionner. Idéal pour passer d'une grande photo à une petite icône.</p>
                     </div>
                     <div class="help-item">
                         <h4>💾 Formats</h4>
-                        <p>Utilisez le <b>PNG</b> pour garder le fond transparent après détourage.</p>
+                        <p>Le <b>PNG</b> est indispensable si vous voulez que votre image reste sans fond (transparente).</p>
                     </div>
                 </div>
                 <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">J'ai compris</button>
             </div>
         </div>
-
     </div>
 
     <script src="script.js"></script>
