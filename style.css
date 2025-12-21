@@ -114,3 +114,9 @@ select {
 .btn-ghost:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
 
 @media (max-width: 850px) { .editor-grid { grid-template-columns: 1fr; } }
+
+.upload-section.highlight {
+    border-color: var(--primary);
+    background-color: #eef2ff;
+    transform: scale(1.02);
+}

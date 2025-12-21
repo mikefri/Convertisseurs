@@ -93,3 +93,59 @@ downloadBtn.addEventListener('click', () => {
     }
     link.click();
 });
+
+// Gestion du Glisser-Déposer (Drag & Drop)
+const dropZone = document.getElementById('drop-zone');
+
+// Empêcher le comportement par défaut du navigateur (qui ouvre l'image)
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }, false);
+});
+
+// Ajouter un effet visuel quand on survole la zone avec un fichier
+['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => {
+        dropZone.classList.add('highlight');
+    }, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => {
+        dropZone.classList.remove('highlight');
+    }, false);
+});
+
+// Gérer la dépose du fichier
+dropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const file = dt.files[0];
+
+    if (file && file.type.startsWith('image/')) {
+        handleFile(file);
+    } else {
+        alert("Veuillez déposer un fichier image valide.");
+    }
+});
+
+// Fonction utilitaire pour centraliser le traitement du fichier
+function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        imgElement = new Image();
+        imgElement.onload = () => {
+            uploadSection.style.display = 'none';
+            previewContainer.style.display = 'grid';
+            processImage();
+        };
+        imgElement.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// Modifie aussi ton écouteur "change" existant pour utiliser la nouvelle fonction handleFile
+upload.addEventListener('change', (e) => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+});
