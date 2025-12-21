@@ -1,8 +1,11 @@
 # ✨ ImageConvert Pro
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Build: Passing](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Tech: Vanilla JS](https://img.shields.io/badge/Tech-Vanilla%20JS-orange.svg)
+
 **ImageConvert Pro** est un studio de retouche d'image ultra-léger basé sur navigateur. Il permet de détourer des images (suppression de fond), de les redimensionner en temps réel et de les convertir dans différents formats (PNG, JPG, WebP, BMP) sans aucun serveur externe.
-
-
 
 ## 🚀 Fonctionnalités
 
@@ -12,11 +15,6 @@
 * **Multi-Format :** Exportez vos créations en PNG (transparence), JPEG (fond blanc), WebP ou BMP.
 * **Confidentialité Totale :** Toutes les opérations sont effectuées localement dans votre navigateur. Vos images ne sont jamais envoyées sur un serveur.
 
-## 🛠️ Installation
-
-1.  Téléchargez les trois fichiers : `index.html`, `style.css` et `script.js`.
-2.  Placez-les dans le même dossier.
-3.  Ouvrez `index.html` avec n'importe quel navigateur moderne (Chrome, Firefox, Edge, Safari).
 
 ## 📖 Comment l'utiliser ?
 
@@ -35,4 +33,4 @@
 
 ## 📝 Licence
 
-Ce projet est libre d'utilisation. Amusez-vous à le modifier et à l'améliorer !
+Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, de le modifier et de le distribuer commercialement.
