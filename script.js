@@ -308,44 +308,7 @@ if (audioDownloadDiv) {
     });
 }
 
-// 1. Définition de la fonction globale (doit être en dehors pour être accessible)
-function applyTheme(theme) {
-    const themeBtn = document.getElementById('theme-switch');
-    if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        if (themeBtn) themeBtn.innerHTML = "☀️ Mode Clair";
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-        if (themeBtn) themeBtn.innerHTML = "🌙 Mode Sombre";
-    }
-}
 
-// 2. Initialisation immédiate et gestion du clic
-(function() {
-    // Appliquer le thème sauvegardé dès que possible pour éviter le flash blanc
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') applyTheme('dark');
-
-    // Attendre que le bouton existe pour lui donner sa fonction
-    const initTheme = () => {
-        const themeSwitch = document.getElementById('theme-switch');
-        if (themeSwitch) {
-            themeSwitch.onclick = () => { // .onclick est plus simple et robuste ici
-                const isDark = document.documentElement.hasAttribute('data-theme');
-                const newTheme = isDark ? 'light' : 'dark';
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
-            };
-        }
-    };
-
-    // Sécurité : on essaie d'initialiser maintenant ET quand la page est prête
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initTheme);
-    } else {
-        initTheme();
-    }
-})();
 // Rendre les badges de format cliquables
 document.querySelectorAll('.badge').forEach(badge => {
     badge.style.cursor = 'pointer'; // Curseur main au survol
