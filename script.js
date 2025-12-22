@@ -1,85 +1,77 @@
 /**
- * MultiConvert Pro
- * Traitement Image (Canvas) & Audio (FFmpeg.wasm)
- * Auteur: Micfri
+ * ImageConvert Pro
+ * Created by Micfri
+ * Description: Studio local de traitement d'image (Détourage, Resize, Format)
  */
-// On attend que le navigateur ait fini de lire le HTML
-window.addEventListener('load', () => {
-// --- NAVIGATION ---
-function switchTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-    const target = document.getElementById(tabId);
-    if (target) target.style.display = 'block';
-    
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-}
-
-// --- LOGIQUE IMAGE ---
 const upload = document.getElementById('upload');
 const dropZone = document.getElementById('drop-zone');
 const canvas = document.getElementById('main-canvas');
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
 const previewContainer = document.getElementById('preview-container');
+const toleranceRange = document.getElementById('tolerance-range');
+const toleranceValue = document.getElementById('tolerance-value');
+const formatSelect = document.getElementById('format-select');
+const downloadBtn = document.getElementById('download-btn');
+const resetBtn = document.getElementById('reset-image-btn');
+const fileSizeDisplay = document.getElementById('file-size');
+const colorPreview = document.getElementById('color-preview'); // La pastille ajoutée au HTML
 
-if (upload && canvas) {
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    const toleranceRange = document.getElementById('tolerance-range');
-    const toleranceValue = document.getElementById('tolerance-value');
-    const formatSelect = document.getElementById('format-select');
-    const downloadBtn = document.getElementById('download-btn');
-    const fileSizeDisplay = document.getElementById('file-size');
-    const colorPreview = document.getElementById('color-preview');
-    const inputW = document.getElementById('resize-w');
-    const inputH = document.getElementById('resize-h');
-    const checkRatio = document.getElementById('aspect-ratio');
-    
-    let imgElement = null;
-    let ratio = 1;
-    let targetColor = null;
+const inputW = document.getElementById('resize-w');
+const inputH = document.getElementById('resize-h');
+const checkRatio = document.getElementById('aspect-ratio');
 
-    // --- GESTION FICHIERS ---
-    function handleFile(file) {
-        if (!file || !file.type.startsWith('image/')) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imgElement = new Image();
-            imgElement.onload = () => {
-                ratio = imgElement.width / imgElement.height;
-                if (inputW) inputW.value = imgElement.width;
-                if (inputH) inputH.value = imgElement.height;
-                targetColor = null; // Reset de la pipette lors d'un nouvel import
-                if (dropZone) dropZone.style.display = 'none';
-                if (previewContainer) previewContainer.style.display = 'grid';
-                processImage();
-            };
-            imgElement.src = e.target.result;
+let imgElement = null;
+let ratio = 1;
+let targetColor = null; // Stocke la couleur [R, G, B] sélectionnée par l'utilisateur
+
+// --- GESTION FICHIERS ---
+function handleFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imgElement = new Image();
+        imgElement.onload = () => {
+            ratio = imgElement.width / imgElement.height;
+            inputW.value = imgElement.width;
+            inputH.value = imgElement.height;
+            targetColor = null; // Reset de la pipette lors d'un nouvel import
+            dropZone.style.display = 'none';
+            previewContainer.style.display = 'grid';
+            processImage();
         };
-        reader.readAsDataURL(file);
-    }
+        imgElement.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
 
-    upload.addEventListener('change', (e) => handleFile(e.target.files[0]));
-    dropZone.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
+upload.addEventListener('change', (e) => handleFile(e.target.files[0]));
+dropZone.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(n => {
     dropZone.addEventListener(n, (e) => { e.preventDefault(); e.stopPropagation(); });
 });
-    ['dragenter', 'dragover'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.add('highlight')));
+['dragenter', 'dragover'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.add('highlight')));
 ['dragleave', 'drop'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.remove('highlight')));
+
+// --- GESTION DE LA PIPETTE (CLIC SUR IMAGE) ---
+canvas.addEventListener('click', (e) => {
+    if (!imgElement) return;
+
+    // Calcul de la position réelle sur le canvas (gestion du responsive)
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    // On récupère la couleur du pixel cliqué sur le canvas original (non traité)
+    // Pour être précis, on redessine temporairement l'original si nécessaire ou on lit avant le détourage
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    targetColor = [pixel[0], pixel[1], pixel[2]];
     
-    // --- GESTION DE LA PIPETTE (CLIC SUR IMAGE) ---
-    canvas.addEventListener('click', (e) => {
-        if (!imgElement) return;
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const x = (e.clientX - rect.left) * scaleX;
-        const y = (e.clientY - rect.top) * scaleY;
-        const pixel = ctx.getImageData(x, y, 1, 1).data;
-        targetColor = [pixel[0], pixel[1], pixel[2]];
-        processImage();
-    });
+    processImage();
+});
 
-
-    // --- REDIMENSIONNEMENT TEMPS RÉEL ---
+// --- REDIMENSIONNEMENT TEMPS RÉEL ---
 function updateFromWidth() {
     if(checkRatio.checked && imgElement) inputH.value = Math.round(inputW.value / ratio);
     processImage();
@@ -93,66 +85,60 @@ inputW.addEventListener('input', updateFromWidth);
 inputH.addEventListener('input', updateFromHeight);
 formatSelect.addEventListener('change', processImage);
 
-
-    
 // --- TRAITEMENT ET ESTIMATION POIDS ---
-    function processImage() {
-        if (!imgElement) return;
-        const w = (inputW ? parseInt(inputW.value) : 0) || imgElement.width;
-        const h = (inputH ? parseInt(inputH.value) : 0) || imgElement.height;
-        canvas.width = w; canvas.height = h;
-        // 1. Dessiner l'image originale redimensionnée
-        ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(imgElement, 0, 0, w, h);
-        // 2. Récupérer les données pour le détourage
-        const imgData = ctx.getImageData(0, 0, w, h);
-        const data = imgData.data;
-        const tolerance = toleranceRange ? parseInt(toleranceRange.value) : 80;
+function processImage() {
+    if (!imgElement) return;
 
-        // Définition de la couleur cible (Pipette ou pixel 0,0
-        let rT, gT, bT;
-        if (targetColor) { [rT, gT, bT] = targetColor; } 
-        else { rT = data[0]; gT = data[1]; bT = data[2]; }
-        // Mise à jour visuelle de la pastille dans la sidebar
-        if (colorPreview) colorPreview.style.backgroundColor = `rgb(${rT}, ${gT}, ${bT})`;
-        // 3. Algorithme de suppression de couleur
-        for (let i = 0; i < data.length; i += 4) {
-            const dist = Math.sqrt(Math.pow(data[i]-rT,2) + Math.pow(data[i+1]-gT,2) + Math.pow(data[i+2]-bT,2));
-            if (dist < tolerance) data[i + 3] = 0;
-        }
-        ctx.putImageData(imgData, 0, 0);
-    // 4. Estimation du poids
-    estimateSize()
-        
+    const w = parseInt(inputW.value) || imgElement.width;
+    const h = parseInt(inputH.value) || imgElement.height;
+
+    canvas.width = w;
+    canvas.height = h;
+
+    // 1. Dessiner l'image originale redimensionnée
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(imgElement, 0, 0, w, h);
+
+    // 2. Récupérer les données pour le détourage
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+    const tolerance = parseInt(toleranceRange.value);
+
+    // Définition de la couleur cible (Pipette ou pixel 0,0)
+    let rT, gT, bT;
+    if (targetColor) {
+        [rT, gT, bT] = targetColor;
+    } else {
+        rT = data[0]; gT = data[1]; bT = data[2];
     }
 
+    // Mise à jour visuelle de la pastille dans la sidebar
+    if (colorPreview) {
+        colorPreview.style.backgroundColor = `rgb(${rT}, ${gT}, ${bT})`;
+    }
 
+    // 3. Algorithme de suppression de couleur
+    for (let i = 0; i < data.length; i += 4) {
+        const dist = Math.sqrt(
+            Math.pow(data[i] - rT, 2) +
+            Math.pow(data[i + 1] - gT, 2) +
+            Math.pow(data[i + 2] - bT, 2)
+        );
+        if (dist < tolerance) {
+            data[i + 3] = 0; // Transparence
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    // 4. Estimation du poids
+    estimateSize();
+}
 
 function estimateSize() {
-    // 1. Vérifie si l'élément d'affichage existe
-    const fileSizeDisplay = document.getElementById('file-size');
-    if (!fileSizeDisplay || !canvas) return;
-
-    try {
-        // 2. Sécurité pour le format ICO (on simule le poids via un PNG)
-        let format = formatSelect.value;
-        if (format === 'image/x-icon') format = 'image/png';
-
-        // 3. Calcul
-        const dataUrl = canvas.toDataURL(format, 0.9);
-        const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
-        
-        // 4. Affichage intelligent
-        if (sizeInBytes < 1024) {
-            fileSizeDisplay.innerText = sizeInBytes + " o";
-        } else if (sizeInBytes < 1048576) {
-            fileSizeDisplay.innerText = (sizeInBytes / 1024).toFixed(1) + " Ko";
-        } else {
-            fileSizeDisplay.innerText = (sizeInBytes / 1048576).toFixed(1) + " Mo";
-        }
-    } catch (e) {
-        console.warn("Erreur d'estimation de taille :", e);
-    }
+    const dataUrl = canvas.toDataURL(formatSelect.value, 0.9);
+    const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+    if (sizeInBytes < 1024) fileSizeDisplay.innerText = sizeInBytes + " o";
+    else fileSizeDisplay.innerText = (sizeInBytes / 1024).toFixed(1) + " Ko";
 }
 
 toleranceRange.addEventListener('input', () => {
@@ -171,159 +157,28 @@ resetBtn.addEventListener('click', () => {
     processImage();
 });
 
-
-    // --- EXPORT ---
-if (downloadBtn) {
-    downloadBtn.addEventListener('click', () => {
-        const format = formatSelect ? formatSelect.value : 'image/png';
-        
-        if (format === 'image/x-icon') {
-            // 1. On définit une taille haute définition (256x256 est le top pour ICO)
-            // Ou on utilise la taille actuelle du canvas si elle est plus grande
-            const size = Math.max(canvas.width, canvas.height, 256);
-            
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            
-            tempCanvas.width = size;
-            tempCanvas.height = size;
-
-            // 2. Désactiver le lissage pour garder une icône nette si on agrandit
-            tempCtx.imageSmoothingEnabled = true;
-            tempCtx.imageSmoothingQuality = 'high';
-
-            // 3. Dessiner l'image (centrée si ce n'est pas un carré)
-            tempCtx.drawImage(canvas, 0, 0, size, size);
-            
-            const link = document.createElement('a');
-            link.download = `icon-hd-${Date.now()}.ico`;
-            
-            // 4. Utiliser image/png avec qualité maximale (1.0)
-            // Le format ICO moderne accepte parfaitement le PNG sans perte à l'intérieur
-            link.href = tempCanvas.toDataURL('image/png', 1.0); 
-            link.click();
-        } else {
-            const extension = format.split('/')[1];
-            const link = document.createElement('a');
-            link.download = `converti-${Date.now()}.${extension}`;
-            link.href = canvas.toDataURL(format, 1.0);
-            link.click();
-        }
-    });
-}
-
-    if (toleranceRange) {
-        toleranceRange.addEventListener('input', () => {
-            if (toleranceValue) toleranceValue.innerText = toleranceRange.value;
-            processImage();
-        });
-    }
-}
-
-// --- LOGIQUE AUDIO ---
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: false });
-
-// --- ÉCOUTEUR DE PROGRESSION AUDIO ---
-ffmpeg.setProgress(({ ratio }) => {
-    const progressFill = document.getElementById('audio-progress-fill');
-    const progressBar = document.getElementById('audio-progress-bar'); // Le conteneur
-    const statusText = document.getElementById('conv-status');
-
-    // 1. On force l'affichage du conteneur dès que la progression commence
-    if (progressBar) {
-        progressBar.style.display = 'block';
-    }
+// --- EXPORT ---
+downloadBtn.addEventListener('click', () => {
+    const format = formatSelect.value;
+    const ext = format.split('/')[1];
     
-    const percentage = Math.round(ratio * 100);
-
-    if (progressFill) {
-        // 2. Mise à jour de la largeur
-        progressFill.style.width = percentage + '%';
-        
-        // 3. Effet de glissement de couleur (Violet -> Vert)
-        progressFill.style.backgroundPosition = (100 - percentage) + '% 0%';
-        
-        // 4. Changement de lueur à la fin
-        if (percentage > 80) {
-            progressFill.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.6)";
-        }
+    let finalCanvas = canvas;
+    if (format === 'image/jpeg' || format === 'image/bmp') {
+        finalCanvas = document.createElement('canvas');
+        finalCanvas.width = canvas.width;
+        finalCanvas.height = canvas.height;
+        const fCtx = finalCanvas.getContext('2d');
+        fCtx.fillStyle = "#ffffff";
+        fCtx.fillRect(0, 0, canvas.width, canvas.height);
+        fCtx.drawImage(canvas, 0, 0);
     }
 
-    // 5. Mise à jour du texte
-    if (statusText) {
-        statusText.innerText = `Conversion : ${percentage}%`;
-    }
+    const link = document.createElement('a');
+    link.download = `image-pro-${canvas.width}x${canvas.height}.${ext}`;
+    link.href = finalCanvas.toDataURL(format, 0.95);
+    link.click();
 });
 
-const audioUpload = document.getElementById('audio-upload');
-const convertAudioBtn = document.getElementById('convert-audio-btn');
-const audioStatus = document.getElementById('conv-status');
-const audioDownloadDiv = document.getElementById('audio-download-link');
-
-if (audioUpload) {
-    audioUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            document.getElementById('audio-processing').style.display = 'grid';
-            document.getElementById('audio-filename').innerText = file.name;
-            if (audioStatus) audioStatus.innerText = "Prêt à convertir";
-            // Réinitialise la barre
-            document.getElementById('audio-progress-fill').style.width = '0%';
-            document.getElementById('audio-progress-bar').style.display = 'none';
-        }
-    });
-}
-
-if (convertAudioBtn) {
-    convertAudioBtn.addEventListener('click', async () => {
-        const file = audioUpload.files[0];
-        if (!file) return;
-        const outFormat = document.getElementById('audio-format-select').value;
-        
-        try {
-            convertAudioBtn.disabled = true;
-            if (audioStatus) audioStatus.innerText = "⏳ Chargement...";
-            if (!ffmpeg.isLoaded()) await ffmpeg.load();
-            
-            ffmpeg.FS('writeFile', 'input', await fetchFile(file));
-            await ffmpeg.run('-i', 'input', `output.${outFormat}`);
-            
-const data = ffmpeg.FS('readFile', `output.${outFormat}`);
-const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outFormat}` }));
-
-if (audioDownloadDiv) {
-    audioDownloadDiv.innerHTML = `
-        <a href="${url}" download="audio_converti.${outFormat}" class="btn-primary" style="text-decoration:none; display:block; text-align:center;">
-            📥 Télécharger .${outFormat.toUpperCase()}
-        </a>`;
-}
-            if (audioStatus) audioStatus.innerText = "✅ Terminé !";
-        } catch (err) {
-            console.error(err);
-            if (audioStatus) audioStatus.innerText = "❌ Erreur";
-        } finally {
-            convertAudioBtn.disabled = false;
-        }
-    });
-}
-
-
-// Rendre les badges de format cliquables
-document.querySelectorAll('.badge').forEach(badge => {
-    badge.style.cursor = 'pointer'; // Curseur main au survol
-    badge.addEventListener('click', () => {
-        const format = badge.innerText.toLowerCase();
-        const select = document.getElementById('audio-format-select');
-        
-        if (select) {
-            select.value = format;
-            // Petit effet visuel pour confirmer la sélection
-            badge.style.transform = 'scale(0.95)';
-            setTimeout(() => badge.style.transform = 'scale(1)', 100);
-        }
-    });
-});
 // --- LOGIQUE DE LA MODALE D'AIDE ---
 const helpBtn = document.getElementById('help-btn');
 const helpModal = document.getElementById('help-modal');
@@ -351,4 +206,42 @@ document.getElementById('share-link').onclick = () => {
     alert("Lien copié dans le presse-papier ! 📋");
 };
 
+
+// --- LOGIQUE THÈME SOMBRE (Version corrigée) ---
+const themeBtn = document.getElementById('theme-switch');
+const themeIcon = document.getElementById('theme-icon');
+const themeText = document.getElementById('theme-text');
+
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if(themeIcon) themeIcon.innerText = "☀️";
+        if(themeText) themeText.innerText = "Mode Clair";
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        if(themeIcon) themeIcon.innerText = "🌙";
+        if(themeText) themeText.innerText = "Mode Sombre";
+    }
+}
+
+// Vérification au chargement
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') applyTheme('dark');
+
+// L'écouteur d'événement
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.hasAttribute('data-theme');
+        const newTheme = isDark ? 'light' : 'dark';
+        
+        // Petite animation de rotation sur l'icône
+        if(themeIcon) {
+            themeIcon.style.transition = "transform 0.5s ease";
+            themeIcon.style.transform = "rotate(360deg)";
+            setTimeout(() => themeIcon.style.transform = "rotate(0deg)", 500);
+        }
+        
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
     });
+}
