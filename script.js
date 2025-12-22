@@ -178,12 +178,15 @@ if (convertAudioBtn) {
             ffmpeg.FS('writeFile', 'input', await fetchFile(file));
             await ffmpeg.run('-i', 'input', `output.${outFormat}`);
             
-            const data = ffmpeg.FS('readFile', `output.${outFormat}`);
-            const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outFormat}` }));
-            
-            if (audioDownloadDiv) {
-                audioDownloadDiv.innerHTML = `<a href="${url}" download="audio.${outFormat}" class="btn-primary" style="text-decoration:none; display:block; text-align:center;">📥 Télécharger .${outFormat.toUpperCase()}</a>`;
-            }
+const data = ffmpeg.FS('readFile', `output.${outFormat}`);
+const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outFormat}` }));
+
+if (audioDownloadDiv) {
+    audioDownloadDiv.innerHTML = `
+        <a href="${url}" download="audio_converti.${outFormat}" class="btn-primary" style="text-decoration:none; display:block; text-align:center;">
+            📥 Télécharger .${outFormat.toUpperCase()}
+        </a>`;
+}
             if (audioStatus) audioStatus.innerText = "✅ Terminé !";
         } catch (err) {
             console.error(err);
