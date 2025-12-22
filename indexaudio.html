@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AudioConvert Pro | Conversion Réelle & Compression MP3 HD</title>
+    <title>AudioConvert Pro | Convertisseur Audio HD Multi-formats</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/coi-serviceworker/0.1.7/coi-serviceworker.min.js"></script>
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
@@ -18,7 +18,7 @@
         <header>
             <button id="theme-switch" class="theme-toggle">🌙 Mode Sombre</button>
             <h1 class="logo">🎵 AudioConvert <span>Pro</span></h1>
-            <p class="subtitle">Par <strong>Micfri</strong> • Conversion réelle, Bitrate ajustable & Confidentialité totale</p>
+            <p class="subtitle">Par <strong>Micfri</strong> • MP3, OGG, WAV, M4A, AAC • 100% Local</p>
         </header>
 
         <main>
@@ -27,11 +27,13 @@
                 <label for="upload" class="upload-card">
                     <div class="icon-circle">📂</div>
                     <h2>Glissez votre fichier audio ici</h2>
-                    <p>FLAC, WAV, MP3, M4A, OGG...</p>
+                    <p>Tous formats acceptés (FLAC, WAV, MP3...)</p>
                     <div class="format-badges">
-                        <span class="badge">VRAI ENCODAGE MP3</span>
-                        <span class="badge">WAV HD</span>
-                        <span class="badge">320 KBPS</span>
+                        <span class="badge">MP3</span>
+                        <span class="badge">OGG</span>
+                        <span class="badge">WAV</span>
+                        <span class="badge">M4A</span>
+                        <span class="badge">AAC</span>
                     </div>
                 </label>
             </div>
@@ -55,18 +57,22 @@
 
                 <div class="sidebar">
                     <div class="control-group">
-                        <h3>📦 Exportation</h3>
-                        <label class="field-label">Format de sortie</label>
+                        <h3>📦 Format de sortie</h3>
+                        <label class="field-label">Choisir le format</label>
                         <select id="format-select">
-                            <option value="mp3">MP3 (Universel - compressé)</option>
-                            <option value="wav">WAV (Qualité Studio - lourd)</option>
+                            <option value="mp3">MP3 (Standard compressé)</option>
+                            <option value="ogg">OGG Vorbis (Optimisé Web)</option>
+                            <option value="wav">WAV (Qualité Studio - non compressé)</option>
+                            <option value="m4a">M4A (Apple Lossless/AAC)</option>
+                            <option value="aac">AAC (Haute efficacité)</option>
+                            <option value="flac">FLAC (Compression sans perte)</option>
                         </select>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group" id="bitrate-group">
                         <h3>🔊 Qualité du Bitrate</h3>
                         <div class="label-row">
-                            <span>Qualité cible</span>
+                            <span>Débit cible</span>
                             <b id="bitrate-value">320 kbps</b>
                         </div>
                         <input type="range" id="bitrate-range" min="64" max="320" step="64" value="320">
@@ -74,9 +80,9 @@
                     </div>
 
                     <div class="actions">
-                        <button id="download-btn" class="btn-primary">📥 Lancer la conversion</button>
+                        <button id="download-btn" class="btn-primary">📥 Convertir & Télécharger</button>
                         <div class="btn-row">
-                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouveau fichier</button>
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouvelle image</button>
                         </div>
                     </div>
 
@@ -93,35 +99,34 @@
             <section class="seo-content">
                 <div class="seo-grid">
                     <article>
-                        <h3>⚡ Conversion Réelle</h3>
-                        <p>Contrairement aux simples convertisseurs, <strong>AudioConvert Pro</strong> ré-encode vos fichiers pour réduire réellement leur poids tout en préservant la fidélité sonore.</p>
+                        <h3>⚡ Encodage Réel FFmpeg</h3>
+                        <p>Nous utilisons la technologie <strong>WebAssembly</strong> pour faire tourner le moteur FFmpeg directement sur votre appareil. C'est ce qui permet une vraie réduction de poids.</p>
                     </article>
                     <article>
-                        <h3>📐 Maîtrise du Bitrate</h3>
-                        <p>Ajustez le débit de 64 à 320 kbps. Idéal pour transformer un gros fichier <strong>FLAC</strong> en un <strong>MP3 léger</strong> pour vos envois par mail ou mobile.</p>
+                        <h3>🎵 Support Multi-formats</h3>
+                        <p>Convertissez vos fichiers vers <strong>MP3, OGG ou M4A</strong> pour le streaming, ou vers <strong>WAV et FLAC</strong> pour l'archivage haute fidélité.</p>
                     </article>
                     <article>
-                        <h3>🔒 100% Local & Privé</h3>
-                        <p>Vos musiques ne quittent jamais votre ordinateur. Le traitement se fait dans votre navigateur via WebAssembly pour une sécurité maximale.</p>
+                        <h3>🔒 Sécurité Native</h3>
+                        <p><strong>AudioConvert Pro</strong> respecte votre vie privée : aucun fichier ne transite par nos serveurs.</p>
                     </article>
                 </div>
             </section>
         </main>
 
         <button id="help-btn" class="help-trigger">?</button>
-
         <div id="help-modal" class="modal" style="display:none;">
             <div class="modal-content">
                 <span class="close-modal">&times;</span>
-                <h2>💡 Aide AudioConvert</h2>
+                <h2>💡 Aide Formats Audio</h2>
                 <div class="help-grid">
                     <div class="help-item">
-                        <h4>🔊 Bitrate</h4>
-                        <p>320 kbps est la meilleure qualité possible. Baissez cette valeur pour réduire la taille du fichier.</p>
+                        <h4>💿 MP3 & OGG</h4>
+                        <p>Formats avec perte, parfaits pour réduire le poids d'un fichier FLAC de 30 Mo à 8 Mo.</p>
                     </div>
                     <div class="help-item">
-                        <h4>💾 Formats</h4>
-                        <p>Le MP3 est parfait pour tout usage. Le WAV est recommandé uniquement si vous avez besoin d'une qualité brute sans aucune perte.</p>
+                        <h4>🔊 WAV & FLAC</h4>
+                        <p>Formats haute qualité. Le poids restera élevé car ils conservent tous les détails sonores.</p>
                     </div>
                 </div>
                 <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">Compris !</button>
@@ -129,20 +134,9 @@
         </div>
 
         <footer class="app-footer">
-            <div class="footer-content">
-                <p>Conçu avec ❤️ par <strong>Micfri</strong> &copy; 2025</p>
-                <div class="footer-links">
-                    <a href="https://github.com/mikefri" target="_blank">Mon GitHub</a>
-                </div>
-                <div class="kofi-section" style="margin-top: 15px;">
-                    <a href="https://ko-fi.com/mikefri" target="_blank">
-                        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Soutenir sur Ko-fi" style="height: 30px;">
-                    </a>
-                </div>
-            </div>
+            <p>Conçu avec ❤️ par <strong>Micfri</strong> &copy; 2025</p>
         </footer>
     </div>
-
     <script src="scriptaudio.js"></script>
 </body>
 </html>
