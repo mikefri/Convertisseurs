@@ -3,7 +3,8 @@
  * Traitement Image (Canvas) & Audio (FFmpeg.wasm)
  * Auteur: Micfri
  */
-
+// On attend que le navigateur ait fini de lire le HTML
+window.addEventListener('load', () => {
 // --- NAVIGATION ---
 function switchTab(tabId, btn) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
@@ -379,3 +380,5 @@ document.getElementById('share-link').onclick = () => {
     navigator.clipboard.writeText(window.location.href);
     alert("Lien copié dans le presse-papier ! 📋");
 };
+
+    });
