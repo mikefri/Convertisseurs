@@ -1,5 +1,9 @@
 const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
+const ffmpeg = createFFmpeg({ 
+    log: true,
+    // On force l'utilisation d'un seul thread pour éviter l'erreur SharedArrayBuffer
+    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js'
+});
 
 // Éléments UI
 const upload = document.getElementById('upload');
@@ -70,42 +74,34 @@ downloadBtn.addEventListener('click', async () => {
     const file = upload.files[0];
     if (!file) return;
 
-    const extension = formatSelect.value;
     downloadBtn.disabled = true;
-    downloadBtn.innerText = "⏳ Chargement FFmpeg...";
-    progressFill.style.width = "10%";
+    downloadBtn.innerText = "⏳ Chargement...";
 
-    if (!ffmpeg.isLoaded()) await ffmpeg.load();
-
-    const inputName = `input.${file.name.split('.').pop()}`;
-    const outputName = `output.${extension}`;
-
-    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
-    
-    downloadBtn.innerText = `⚙️ Encodage ${extension.toUpperCase()}...`;
-    progressFill.style.width = "40%";
-
-    // Paramètres de conversion
-    let ffmpegArgs = ['-i', inputName];
-    if (extension !== 'wav' && extension !== 'flac') {
-        ffmpegArgs.push('-b:a', `${bitrateRange.value}k`);
+    // Chargement spécifique version 0.10
+    if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
     }
-    ffmpegArgs.push(outputName);
 
-    await ffmpeg.run(...ffmpegArgs);
+    const inputExt = file.name.split('.').pop();
+    const outputName = `output.${formatSelect.value}`;
+
+    await ffmpeg.FS('writeFile', `input.${inputExt}`, await fetchFile(file));
+    
+    downloadBtn.innerText = "⚙️ Conversion...";
+    
+    // Commande FFmpeg
+    await ffmpeg.run('-i', `input.${inputExt}`, '-b:a', `${bitrateRange.value}k`, outputName);
 
     const data = ffmpeg.FS('readFile', outputName);
-    const mimeType = extension === 'mp3' ? 'audio/mpeg' : `audio/${extension}`;
-    const url = URL.createObjectURL(new Blob([data.buffer], { type: mimeType }));
+    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mpeg' }));
     
     const link = document.createElement('a');
     link.href = url;
-    link.download = `audiopro-${Date.now()}.${extension}`;
+    link.download = `converti-${Date.now()}.${formatSelect.value}`;
     link.click();
 
     downloadBtn.disabled = false;
     downloadBtn.innerText = "📥 Télécharger à nouveau";
-    progressFill.style.width = "100%";
 });
 
 // Thème & Modal (restaurés)
