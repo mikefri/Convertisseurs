@@ -227,3 +227,19 @@ if (shareBtn) {
         alert("Lien copié ! 📋");
     };
 }
+
+// Rendre les badges de format cliquables
+document.querySelectorAll('.badge').forEach(badge => {
+    badge.style.cursor = 'pointer'; // Curseur main au survol
+    badge.addEventListener('click', () => {
+        const format = badge.innerText.toLowerCase();
+        const select = document.getElementById('audio-format-select');
+        
+        if (select) {
+            select.value = format;
+            // Petit effet visuel pour confirmer la sélection
+            badge.style.transform = 'scale(0.95)';
+            setTimeout(() => badge.style.transform = 'scale(1)', 100);
+        }
+    });
+});
