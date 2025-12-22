@@ -201,3 +201,48 @@ canvas { max-width: 100%; height: auto; cursor: crosshair; }
     .sidebar { order: 2; }
     .preview-card { order: 1; min-height: 350px; }
 }
+
+C'est parti ! On va donner à cette barre un aspect "Premium" avec un dégradé animé et une lueur pour que l'utilisateur sente que l'application travaille dur.
+
+1. Le CSS (Style de la barre)
+Ajoute ce bloc dans ton fichier style.css. Il va transformer la barre grise toute simple en une barre moderne et animée :
+
+CSS
+
+/* Container de la barre */
+.progress-container {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1); /* Fond semi-transparent */
+    border-radius: 20px;
+    height: 12px;
+    margin: 15px 0;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    display: none; /* Caché par défaut */
+}
+
+/* Remplissage de la barre */
+#audio-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
+    background-size: 200% 100%;
+    border-radius: 20px;
+    position: relative;
+    transition: width 0.3s ease;
+    animation: gradientMove 2s linear infinite; /* Animation du dégradé */
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+/* Animation qui fait bouger le dégradé */
+@keyframes gradientMove {
+    0% { background-position: 100% 0%; }
+    100% { background-position: -100% 0%; }
+}
+
+/* Petit badge de pourcentage */
+.status-badge {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: var(--primary);
+    margin-top: 5px;
+}
