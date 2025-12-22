@@ -117,11 +117,14 @@ const ffmpeg = createFFmpeg({ log: false });
 ffmpeg.setProgress(({ ratio }) => {
     const progressFill = document.getElementById('audio-progress-fill');
     const progressBar = document.getElementById('audio-progress-bar');
+    const statusText = document.getElementById('conv-status');
+
     if (progressBar) progressBar.style.display = 'block';
+    
     if (progressFill) {
         const percentage = Math.round(ratio * 100);
         progressFill.style.width = percentage + '%';
-        document.getElementById('conv-status').innerText = `Conversion : ${percentage}%`;
+        if (statusText) statusText.innerText = `Conversion en cours... ${percentage}%`;
     }
 });
 
