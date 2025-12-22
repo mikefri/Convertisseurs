@@ -132,8 +132,13 @@
                         <div class="audio-info-box">
                             <div class="audio-icon-large">🎼</div>
                             <h4 id="audio-filename">Fichier sélectionné</h4>
-                            <div id="conv-status" class="status-badge">En attente</div>
+    
+                            <div class="progress-container" style="width:100%; background:#eee; border-radius:10px; height:10px; margin:10px 0; overflow:hidden; display:none;" id="audio-progress-bar">
+                            <div id="audio-progress-fill" style="width:0%; height:100%; background:var(--primary); transition: width 0.3s;"></div>
                         </div>
+
+    <div id="conv-status" class="status-badge">En attente</div>
+</div>
                     </div>
 
                     <div class="sidebar">
