@@ -319,24 +319,25 @@ function applyTheme(theme) {
     }
 }
 
-// On utilise l'ID correct "theme-switch"
-const themeSwitch = document.getElementById('theme-switch');
+// On attend que le HTML soit totalement chargé
+document.addEventListener('DOMContentLoaded', () => {
+    const themeSwitch = document.getElementById('theme-switch');
 
-if (themeSwitch) {
-    themeSwitch.addEventListener('click', () => {
-        const isDark = document.documentElement.hasAttribute('data-theme');
-        const newTheme = isDark ? 'light' : 'dark';
-        applyTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-    });
-}
+    if (themeSwitch) {
+        themeSwitch.addEventListener('click', () => {
+            const isDark = document.documentElement.hasAttribute('data-theme');
+            const newTheme = isDark ? 'light' : 'dark';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
 
-// Appliquer le thème stocké au chargement
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    applyTheme('dark');
-}
-
+    // Appliquer le thème stocké
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        applyTheme('dark');
+    }
+});
 // Rendre les badges de format cliquables
 document.querySelectorAll('.badge').forEach(badge => {
     badge.style.cursor = 'pointer'; // Curseur main au survol
