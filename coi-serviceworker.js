@@ -30,7 +30,6 @@ if (typeof window === 'undefined') {
     });
 } else {
     (() => {
-        const script = document.currentScript;
         const reload = () => {
             window.location.reload();
         };
@@ -41,7 +40,8 @@ if (typeof window === 'undefined') {
                     reload();
                 }
 
-                navigator.serviceWorker.register('./coi-serviceworker.js', { scope: "./" })
+                // LIGNE 44 CORRIGÉE POUR GITHUB PAGES
+                navigator.serviceWorker.register('./coi-serviceworker.js', { scope: "./" }).then((registration) => {
                     registration.addEventListener("updatefound", () => {
                         const installingWorker = registration.installing;
                         installingWorker.onstatechange = () => {
