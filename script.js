@@ -94,26 +94,37 @@ if (upload && canvas) {
 if (downloadBtn) {
     downloadBtn.addEventListener('click', () => {
         const format = formatSelect ? formatSelect.value : 'image/png';
-        const extension = format === 'image/x-icon' ? 'ico' : format.split('/')[1];
         
-        // Si c'est un ICO, on force souvent une taille carrée standard
         if (format === 'image/x-icon') {
+            // 1. On définit une taille haute définition (256x256 est le top pour ICO)
+            // Ou on utilise la taille actuelle du canvas si elle est plus grande
+            const size = Math.max(canvas.width, canvas.height, 256);
+            
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = 128;  // Taille standard pour une icône
-            tempCanvas.height = 128;
-            tempCtx.drawImage(canvas, 0, 0, 128, 128);
+            
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+
+            // 2. Désactiver le lissage pour garder une icône nette si on agrandit
+            tempCtx.imageSmoothingEnabled = true;
+            tempCtx.imageSmoothingQuality = 'high';
+
+            // 3. Dessiner l'image (centrée si ce n'est pas un carré)
+            tempCtx.drawImage(canvas, 0, 0, size, size);
             
             const link = document.createElement('a');
-            link.download = `icon-${Date.now()}.ico`;
-            // On l'exporte en PNG mais avec l'extension .ico (supporté par la plupart des OS/Navigateurs)
-            link.href = tempCanvas.toDataURL('image/png'); 
+            link.download = `icon-hd-${Date.now()}.ico`;
+            
+            // 4. Utiliser image/png avec qualité maximale (1.0)
+            // Le format ICO moderne accepte parfaitement le PNG sans perte à l'intérieur
+            link.href = tempCanvas.toDataURL('image/png', 1.0); 
             link.click();
         } else {
-            // Logique standard pour PNG/JPG/WebP
+            const extension = format.split('/')[1];
             const link = document.createElement('a');
             link.download = `converti-${Date.now()}.${extension}`;
-            link.href = canvas.toDataURL(format);
+            link.href = canvas.toDataURL(format, 1.0);
             link.click();
         }
     });
