@@ -100,9 +100,9 @@ if (downloadBtn) {
         if (format === 'image/x-icon') {
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = 64;  // Taille standard pour une icône
-            tempCanvas.height = 64;
-            tempCtx.drawImage(canvas, 0, 0, 64, 64);
+            tempCanvas.width = 128;  // Taille standard pour une icône
+            tempCanvas.height = 128;
+            tempCtx.drawImage(canvas, 0, 0, 128, 128);
             
             const link = document.createElement('a');
             link.download = `icon-${Date.now()}.ico`;
