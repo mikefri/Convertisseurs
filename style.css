@@ -263,3 +263,34 @@ CSS
     from { left: -100%; }
     to { left: 200%; }
 }
+
+/* Conteneur des badges */
+.format-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+    justify-content: center;
+}
+
+/* Style individuel des badges */
+.badge {
+    background: rgba(99, 102, 241, 0.1); /* Couleur primaire très légère */
+    color: var(--primary); /* Ton violet principal */
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+/* Petit effet au survol */
+.badge:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
