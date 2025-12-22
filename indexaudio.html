@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AudioConvert Pro | Conversion Réelle MP3 & WAV</title>
+    <title>AudioConvert Pro | Conversion Réelle & Compression MP3 HD</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/coi-serviceworker/0.1.7/coi-serviceworker.min.js"></script>
-    
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
 </head>
 <body>
 
@@ -18,18 +18,20 @@
         <header>
             <button id="theme-switch" class="theme-toggle">🌙 Mode Sombre</button>
             <h1 class="logo">🎵 AudioConvert <span>Pro</span></h1>
-            <p class="subtitle">Compression réelle par <strong>Micfri</strong> • 100% Local & Sécurisé</p>
+            <p class="subtitle">Par <strong>Micfri</strong> • Conversion réelle, Bitrate ajustable & Confidentialité totale</p>
         </header>
 
         <main>
             <div id="drop-zone" class="upload-section">
                 <input type="file" id="upload" accept="audio/*" hidden>
                 <label for="upload" class="upload-card">
-                    <div class="icon-circle">🎙️</div>
-                    <h2>Glissez votre musique ici</h2>
-                    <p>FLAC, WAV, MP3, OGG...</p>
+                    <div class="icon-circle">📂</div>
+                    <h2>Glissez votre fichier audio ici</h2>
+                    <p>FLAC, WAV, MP3, M4A, OGG...</p>
                     <div class="format-badges">
-                        <span class="badge">VRAIE COMPRESSION MP3</span>
+                        <span class="badge">VRAI ENCODAGE MP3</span>
+                        <span class="badge">WAV HD</span>
+                        <span class="badge">320 KBPS</span>
                     </div>
                 </label>
             </div>
@@ -38,40 +40,107 @@
                 <div class="preview-card">
                     <div class="audio-info-box">
                         <div class="audio-icon-large">💿</div>
-                        <h2 id="audio-filename">fichier.flac</h2>
+                        <h2 id="audio-filename">fichier_audio.flac</h2>
+                        <span class="status-badge" id="audio-duration">00:00</span>
+                        
                         <div class="progress-container">
                             <div id="audio-progress-fill"></div>
                         </div>
-                        <audio id="main-audio" controls style="width: 100%;"></audio>
+                        
+                        <div class="audio-controls">
+                            <audio id="main-audio" controls style="width: 100%; margin-top: 10px;"></audio>
+                        </div>
                     </div>
                 </div>
 
                 <div class="sidebar">
                     <div class="control-group">
-                        <h3>📦 Format de sortie</h3>
+                        <h3>📦 Exportation</h3>
+                        <label class="field-label">Format de sortie</label>
                         <select id="format-select">
-                            <option value="mp3">MP3 (Haute Compatibilité)</option>
-                            <option value="wav">WAV (Sans perte - lourd)</option>
+                            <option value="mp3">MP3 (Universel - compressé)</option>
+                            <option value="wav">WAV (Qualité Studio - lourd)</option>
                         </select>
                     </div>
 
                     <div class="control-group">
                         <h3>🔊 Qualité du Bitrate</h3>
                         <div class="label-row">
-                            <span>Cible</span>
+                            <span>Qualité cible</span>
                             <b id="bitrate-value">320 kbps</b>
                         </div>
                         <input type="range" id="bitrate-range" min="64" max="320" step="64" value="320">
-                        <div class="file-info">Taille estimée : <span id="est-size">--</span></div>
+                        <div class="file-info">Poids estimé : <span id="file-size">--</span></div>
                     </div>
 
                     <div class="actions">
                         <button id="download-btn" class="btn-primary">📥 Lancer la conversion</button>
-                        <button onclick="location.reload()" class="btn-ghost" style="margin-top:10px; width:100%;">🗑️ Annuler</button>
+                        <div class="btn-row">
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouveau fichier</button>
+                        </div>
+                    </div>
+
+                    <div class="share-section">
+                        <p>Partager l'outil :</p>
+                        <div class="share-buttons">
+                            <a id="share-link" title="Copier le lien" class="share-btn">🔗</a>
+                            <a id="share-wa" target="_blank" title="WhatsApp" class="share-btn">📱</a>
+                        </div>
                     </div>
                 </div> 
             </div>
+
+            <section class="seo-content">
+                <div class="seo-grid">
+                    <article>
+                        <h3>⚡ Conversion Réelle</h3>
+                        <p>Contrairement aux simples convertisseurs, <strong>AudioConvert Pro</strong> ré-encode vos fichiers pour réduire réellement leur poids tout en préservant la fidélité sonore.</p>
+                    </article>
+                    <article>
+                        <h3>📐 Maîtrise du Bitrate</h3>
+                        <p>Ajustez le débit de 64 à 320 kbps. Idéal pour transformer un gros fichier <strong>FLAC</strong> en un <strong>MP3 léger</strong> pour vos envois par mail ou mobile.</p>
+                    </article>
+                    <article>
+                        <h3>🔒 100% Local & Privé</h3>
+                        <p>Vos musiques ne quittent jamais votre ordinateur. Le traitement se fait dans votre navigateur via WebAssembly pour une sécurité maximale.</p>
+                    </article>
+                </div>
+            </section>
         </main>
+
+        <button id="help-btn" class="help-trigger">?</button>
+
+        <div id="help-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>💡 Aide AudioConvert</h2>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <h4>🔊 Bitrate</h4>
+                        <p>320 kbps est la meilleure qualité possible. Baissez cette valeur pour réduire la taille du fichier.</p>
+                    </div>
+                    <div class="help-item">
+                        <h4>💾 Formats</h4>
+                        <p>Le MP3 est parfait pour tout usage. Le WAV est recommandé uniquement si vous avez besoin d'une qualité brute sans aucune perte.</p>
+                    </div>
+                </div>
+                <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">Compris !</button>
+            </div>
+        </div>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p>Conçu avec ❤️ par <strong>Micfri</strong> &copy; 2025</p>
+                <div class="footer-links">
+                    <a href="https://github.com/mikefri" target="_blank">Mon GitHub</a>
+                </div>
+                <div class="kofi-section" style="margin-top: 15px;">
+                    <a href="https://ko-fi.com/mikefri" target="_blank">
+                        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Soutenir sur Ko-fi" style="height: 30px;">
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="script.js"></script>
