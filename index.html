@@ -56,6 +56,7 @@
         <span class="badge img-badge">PNG</span>
         <span class="badge img-badge">JPG</span>
         <span class="badge img-badge">WEBP</span>
+        <span class="badge">BMP</span>
         <span class="badge img-badge">ICO</span>
     </div>
 </label>
@@ -84,25 +85,28 @@
                         </div>
 
                         <div class="control-group">
-                            <h3>📏 Dimensions (Pixels)</h3>
-                            <div class="resize-inputs">
-                                <div class="input-box">
-                                    <label>Largeur</label>
-                                    <input type="number" id="resize-w">
-                                </div>
-                                <div class="input-box">
-                                    <label>Hauteur</label>
-                                    <input type="number" id="resize-h">
-                                </div>
+                        <h3>📏 Dimensions (Pixels)</h3>
+                        <div class="resize-inputs">
+                            <div class="input-box">
+                                <label>Largeur</label>
+                                <input type="number" id="resize-w" placeholder="L">
+                            </div>
+                            <div class="input-box">
+                                <label>Hauteur</label>
+                                <input type="number" id="resize-h" placeholder="H">
                             </div>
                         </div>
-
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="aspect-ratio" checked> Conserver les proportions
+                        </label>
+                    </div>
                         <div class="control-group">
                             <h3>📦 Exportation</h3>
 <select id="format-select">
     <option value="image/png">PNG (Transparence)</option>
     <option value="image/jpeg">JPG (Léger)</option>
     <option value="image/webp">WebP (Optimisé)</option>
+    <option value="image/bmp">BMP (Qualité Windows)</option>
     <option value="image/x-icon">ICO (Favicon/Icône)</option> </select>
                         </div>
 
