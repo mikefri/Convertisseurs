@@ -41,7 +41,7 @@ if (typeof window === 'undefined') {
                     reload();
                 }
 
-                navigator.serviceWorker.register(window.location.href, { scope: "./" }).then((registration) => {
+                navigator.serviceWorker.register('./coi-serviceworker.js', { scope: "./" })
                     registration.addEventListener("updatefound", () => {
                         const installingWorker = registration.installing;
                         installingWorker.onstatechange = () => {
