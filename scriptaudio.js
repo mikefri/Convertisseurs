@@ -1,36 +1,50 @@
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: true });
 
+// Éléments UI
 const upload = document.getElementById('upload');
 const dropZone = document.getElementById('drop-zone');
 const previewContainer = document.getElementById('preview-container');
 const audioControl = document.getElementById('main-audio');
 const fileNameDisplay = document.getElementById('audio-filename');
+const durationDisplay = document.getElementById('audio-duration');
 const progressFill = document.getElementById('audio-progress-fill');
 const bitrateRange = document.getElementById('bitrate-range');
 const bitrateValue = document.getElementById('bitrate-value');
+const formatSelect = document.getElementById('format-select');
 const downloadBtn = document.getElementById('download-btn');
-const estSizeDisplay = document.getElementById('est-size');
+const fileSizeDisplay = document.getElementById('file-size');
+const bitrateGroup = document.getElementById('bitrate-group');
 
-// --- 1. GESTION DU FICHIER ENTRANT ---
-upload.addEventListener('change', async (e) => {
+// Masquer le bitrate pour le WAV (format non-compressé)
+formatSelect.addEventListener('change', () => {
+    if (formatSelect.value === 'wav' || formatSelect.value === 'flac') {
+        bitrateGroup.style.opacity = "0.5";
+        bitrateGroup.style.pointerEvents = "none";
+        fileSizeDisplay.innerText = "Calcul non disponible (Lossless)";
+    } else {
+        bitrateGroup.style.opacity = "1";
+        bitrateGroup.style.pointerEvents = "all";
+        updateEstimation();
+    }
+});
+
+// --- GESTION FICHIER & ESTIMATION ---
+upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
         fileNameDisplay.innerText = file.name;
         audioControl.src = URL.createObjectURL(file);
         dropZone.style.display = 'none';
         previewContainer.style.display = 'grid';
-        updateEstimation();
     }
 });
 
-// --- 2. ESTIMATION DE LA TAILLE ---
 function updateEstimation() {
-    if (audioControl.duration) {
+    if (audioControl.duration && formatSelect.value !== 'wav' && formatSelect.value !== 'flac') {
         const kbps = parseInt(bitrateRange.value);
-        const duration = audioControl.duration;
-        const sizeMb = (kbps * duration) / 8000;
-        estSizeDisplay.innerText = `~${sizeMb.toFixed(1)} Mo`;
+        const sizeMb = (kbps * audioControl.duration) / 8000;
+        fileSizeDisplay.innerText = `~${sizeMb.toFixed(1)} Mo`;
     }
 }
 
@@ -39,66 +53,64 @@ bitrateRange.addEventListener('input', () => {
     updateEstimation();
 });
 
-audioControl.addEventListener('loadedmetadata', updateEstimation);
+audioControl.onloadedmetadata = () => {
+    const min = Math.floor(audioControl.duration / 60);
+    const sec = Math.floor(audioControl.duration % 60);
+    durationDisplay.innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    updateEstimation();
+};
 
-// --- 3. LE MOTEUR DE CONVERSION (Cœur du projet) ---
+audioControl.ontimeupdate = () => {
+    const percentage = (audioControl.currentTime / audioControl.duration) * 100;
+    progressFill.style.width = percentage + "%";
+};
+
+// --- MOTEUR DE CONVERSION ---
 downloadBtn.addEventListener('click', async () => {
     const file = upload.files[0];
-    const targetBitrate = bitrateRange.value;
-    
+    if (!file) return;
+
+    const extension = formatSelect.value;
     downloadBtn.disabled = true;
-    downloadBtn.innerText = "⏳ Initialisation...";
+    downloadBtn.innerText = "⏳ Chargement FFmpeg...";
     progressFill.style.width = "10%";
 
-    try {
-        // Charger le moteur s'il ne l'est pas
-        if (!ffmpeg.isLoaded()) await ffmpeg.load();
-        
-        progressFill.style.width = "25%";
-        downloadBtn.innerText = "⚙️ Encodage en cours...";
+    if (!ffmpeg.isLoaded()) await ffmpeg.load();
 
-        // Écrire le fichier dans la mémoire virtuelle
-        const inputExt = file.name.split('.').pop();
-        ffmpeg.FS('writeFile', 'input.' + inputExt, await fetchFile(file));
+    const inputName = `input.${file.name.split('.').pop()}`;
+    const outputName = `output.${extension}`;
 
-        // EXECUTION DE LA COMMANDE FFmpeg
-        // -i input : fichier source
-        // -b:a 320k : force le bitrate (C'est ça qui réduit le poids !)
-        // output.mp3 : fichier de sortie
-        await ffmpeg.run('-i', 'input.' + inputExt, '-b:a', targetBitrate + 'k', 'output.mp3');
+    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+    
+    downloadBtn.innerText = `⚙️ Encodage ${extension.toUpperCase()}...`;
+    progressFill.style.width = "40%";
 
-        // Lire le fichier converti
-        const data = ffmpeg.FS('readFile', 'output.mp3');
-        
-        // Créer le lien de téléchargement
-        const blob = new Blob([data.buffer], { type: 'audio/mpeg' });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `audio-pro-${targetBitrate}kbps.mp3`;
-        link.click();
-
-        progressFill.style.width = "100%";
-        downloadBtn.innerText = "✅ Terminé !";
-        
-        // Nettoyage mémoire
-        ffmpeg.FS('unlink', 'input.' + inputExt);
-        ffmpeg.FS('unlink', 'output.mp3');
-
-    } catch (error) {
-        console.error(error);
-        alert("Erreur lors de la conversion. Vérifiez la console.");
-        downloadBtn.innerText = "❌ Erreur";
-    } finally {
-        setTimeout(() => {
-            downloadBtn.disabled = false;
-            downloadBtn.innerText = "📥 Lancer la conversion";
-        }, 3000);
+    // Paramètres de conversion
+    let ffmpegArgs = ['-i', inputName];
+    if (extension !== 'wav' && extension !== 'flac') {
+        ffmpegArgs.push('-b:a', `${bitrateRange.value}k`);
     }
+    ffmpegArgs.push(outputName);
+
+    await ffmpeg.run(...ffmpegArgs);
+
+    const data = ffmpeg.FS('readFile', outputName);
+    const mimeType = extension === 'mp3' ? 'audio/mpeg' : `audio/${extension}`;
+    const url = URL.createObjectURL(new Blob([data.buffer], { type: mimeType }));
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `audiopro-${Date.now()}.${extension}`;
+    link.click();
+
+    downloadBtn.disabled = false;
+    downloadBtn.innerText = "📥 Télécharger à nouveau";
+    progressFill.style.width = "100%";
 });
 
-// Thème switch
-document.getElementById('theme-switch').addEventListener('click', () => {
+// Thème & Modal (restaurés)
+document.getElementById('theme-switch').onclick = () => {
     document.documentElement.toggleAttribute('data-theme');
-});
+};
+document.getElementById('help-btn').onclick = () => document.getElementById('help-modal').style.display = 'flex';
+document.querySelector('.close-modal').onclick = () => document.getElementById('help-modal').style.display = 'none';
