@@ -113,20 +113,35 @@ if (upload && canvas) {
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: false });
 
-// Écouteur de progression
+// --- ÉCOUTEUR DE PROGRESSION AUDIO ---
 ffmpeg.setProgress(({ ratio }) => {
-const progressFill = document.getElementById('audio-progress-fill');
+    const progressFill = document.getElementById('audio-progress-fill');
+    const progressBar = document.getElementById('audio-progress-bar'); // Le conteneur
+    const statusText = document.getElementById('conv-status');
+
+    // 1. On force l'affichage du conteneur dès que la progression commence
+    if (progressBar) {
+        progressBar.style.display = 'block';
+    }
+    
     const percentage = Math.round(ratio * 100);
 
     if (progressFill) {
+        // 2. Mise à jour de la largeur
         progressFill.style.width = percentage + '%';
-        // On déplace le dégradé en fonction du pourcentage
+        
+        // 3. Effet de glissement de couleur (Violet -> Vert)
         progressFill.style.backgroundPosition = (100 - percentage) + '% 0%';
         
-        // Change aussi la lueur pour qu'elle devienne verte à la fin
+        // 4. Changement de lueur à la fin
         if (percentage > 80) {
-            progressFill.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.5)";
+            progressFill.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.6)";
         }
+    }
+
+    // 5. Mise à jour du texte
+    if (statusText) {
+        statusText.innerText = `Conversion : ${percentage}%`;
     }
 });
 
