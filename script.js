@@ -160,9 +160,12 @@ resetBtn.addEventListener('click', () => {
 // --- EXPORT ---
 downloadBtn.addEventListener('click', () => {
     const format = formatSelect.value;
-    const ext = format.split('/')[1];
+    let ext = format.split('/')[1];
+    if (ext === 'x-icon') ext = 'ico'; // Correction pour l'extension ICO
     
     let finalCanvas = canvas;
+
+    // Gestion du fond pour JPEG/BMP
     if (format === 'image/jpeg' || format === 'image/bmp') {
         finalCanvas = document.createElement('canvas');
         finalCanvas.width = canvas.width;
@@ -173,9 +176,18 @@ downloadBtn.addEventListener('click', () => {
         fCtx.drawImage(canvas, 0, 0);
     }
 
+    // Gestion spécifique pour l'ICO HD
+    let exportUrl;
+    if (format === 'image/x-icon') {
+        // Pour l'ICO, on s'assure d'utiliser le format PNG en interne pour garder la transparence HD
+        exportUrl = canvas.toDataURL('image/png'); 
+    } else {
+        exportUrl = finalCanvas.toDataURL(format, 0.95);
+    }
+
     const link = document.createElement('a');
     link.download = `image-pro-${canvas.width}x${canvas.height}.${ext}`;
-    link.href = finalCanvas.toDataURL(format, 0.95);
+    link.href = exportUrl;
     link.click();
 });
 
