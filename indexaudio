@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>AudioConvert Pro | Convertisseur Audio Gratuit & Rapide</title>
+    <meta name="description" content="Convertissez vos fichiers audio instantanément en MP3, WAV, OGG ou M4A. Outil gratuit, sécurisé et 100% local.">
+    <meta name="author" content="Micfri">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <button id="theme-switch" class="theme-toggle">🌙 Mode Sombre</button>
+            <h1 class="logo">🎵 AudioConvert <span>Pro</span></h1>
+            <p class="subtitle">Par <strong>Micfri</strong> • Conversion ultra-rapide, échantillonnage & formats multiples, Gratuit</p>
+        </header>
+
+        <main>
+            <div id="drop-zone" class="upload-section">
+                <input type="file" id="upload" accept="audio/*" hidden>
+                <label for="upload" class="upload-card">
+                    <div class="icon-circle">🎙️</div>
+                    <h2>Glissez votre fichier audio ici</h2>
+                    <p>ou cliquez pour parcourir vos dossiers</p>
+                    <div class="format-badges">
+                        <span class="badge">MP3</span>
+                        <span class="badge">WAV</span>
+                        <span class="badge">OGG</span>
+                        <span class="badge">M4A</span>
+                        <span class="badge">FLAC</span>
+                    </div>
+                </label>
+            </div>
+
+            <div id="preview-container" class="editor-grid" style="display:none;">
+                <div class="preview-card">
+                    <div class="audio-info-box">
+                        <div class="audio-icon-large">💿</div>
+                        <h2 id="audio-filename">nom-du-fichier.mp3</h2>
+                        <span class="status-badge" id="audio-duration">00:00</span>
+                        
+                        <div class="progress-container" style="display: block;">
+                            <div id="audio-progress-fill"></div>
+                        </div>
+                        
+                        <div class="audio-controls">
+                            <audio id="main-audio" controls style="width: 100%; margin-top: 20px;"></audio>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="control-group">
+                        <h3>⚡ Paramètres de sortie</h3>
+                        <label for="format-select" class="field-label">Format de destination</label>
+                        <select id="format-select">
+                            <option value="audio/mpeg">MP3 (Universel)</option>
+                            <option value="audio/wav">WAV (Haute Qualité)</option>
+                            <option value="audio/ogg">OGG (Optimisé Web)</option>
+                            <option value="audio/aac">M4A (Apple Standard)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>🔊 Qualité (Bitrate)</h3>
+                        <div class="label-row">
+                            <span>Vitesse de rendu</span>
+                            <b id="bitrate-value">192 kbps</b>
+                        </div>
+                        <input type="range" id="bitrate-range" min="64" max="320" step="64" value="192">
+                        <small class="hint">Plus le débit est élevé, meilleure est la qualité.</small>
+                    </div>
+
+                    <div class="actions">
+                        <button id="download-btn" class="btn-primary">📥 Convertir & Télécharger</button>
+                        <div class="btn-row">
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouveau fichier</button>
+                        </div>
+                    </div>
+
+                    <div class="share-section">
+                        <p>Partager l'outil :</p>
+                        <div class="share-buttons">
+                            <a id="share-link" title="Copier le lien" class="share-btn">🔗</a>
+                            <a id="share-wa" target="_blank" class="share-btn">📱</a>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+
+            <section class="seo-content">
+                <div class="seo-grid">
+                    <article>
+                        <h3>🎸 Qualité Cristalline</h3>
+                        <p>Convertissez vos musiques et enregistrements sans perte de fidélité notable. Choisissez le bitrate adapté à vos besoins.</p>
+                    </article>
+                    <article>
+                        <h3>⚡ Rapidité Instantanée</h3>
+                        <p>Grâce au traitement local dans votre navigateur, aucun fichier n'est envoyé sur un serveur. C'est 10 fois plus rapide !</p>
+                    </article>
+                    <article>
+                        <h3>🔒 Respect de la vie privée</h3>
+                        <p>Vos fichiers audio restent sur votre machine. **AudioConvert Pro** garantit une confidentialité totale.</p>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <button id="help-btn" class="help-trigger">?</button>
+        
+        <footer class="app-footer">
+            <p>Conçu avec ❤️ par <strong>Micfri</strong> &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
