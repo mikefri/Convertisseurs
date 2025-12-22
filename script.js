@@ -120,16 +120,38 @@ formatSelect.addEventListener('change', processImage);
             if (dist < tolerance) data[i + 3] = 0;
         }
         ctx.putImageData(imgData, 0, 0);
+    // 4. Estimation du poids
+    estimateSize()
+        
     }
 
-    // 4. Estimation du poids
-    estimateSize();
 
-    function estimateSize() {
-    const dataUrl = canvas.toDataURL(formatSelect.value, 0.9);
-    const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
-    if (sizeInBytes < 1024) fileSizeDisplay.innerText = sizeInBytes + " o";
-    else fileSizeDisplay.innerText = (sizeInBytes / 1024).toFixed(1) + " Ko";
+
+function estimateSize() {
+    // 1. Vérifie si l'élément d'affichage existe
+    const fileSizeDisplay = document.getElementById('file-size');
+    if (!fileSizeDisplay || !canvas) return;
+
+    try {
+        // 2. Sécurité pour le format ICO (on simule le poids via un PNG)
+        let format = formatSelect.value;
+        if (format === 'image/x-icon') format = 'image/png';
+
+        // 3. Calcul
+        const dataUrl = canvas.toDataURL(format, 0.9);
+        const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+        
+        // 4. Affichage intelligent
+        if (sizeInBytes < 1024) {
+            fileSizeDisplay.innerText = sizeInBytes + " o";
+        } else if (sizeInBytes < 1048576) {
+            fileSizeDisplay.innerText = (sizeInBytes / 1024).toFixed(1) + " Ko";
+        } else {
+            fileSizeDisplay.innerText = (sizeInBytes / 1048576).toFixed(1) + " Mo";
+        }
+    } catch (e) {
+        console.warn("Erreur d'estimation de taille :", e);
+    }
 }
 
 toleranceRange.addEventListener('input', () => {
