@@ -4,87 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>MultiConvert Pro | Studio Photo & Audio Gratuit</title>
-    <meta name="description" content="Supprimez le fond de vos images et convertissez vos fichiers audio MP3 vers OGG/WAV. Outil gratuit, rapide et 100% local.">
+    <title>ImageConvert Pro | Détourage Gratuit & Redimensionnement en ligne</title>
+    <meta name="description" content="Supprimez le fond de vos images instantanément, redimensionnez-les et convertissez-les en PNG, JPG ou WebP. Outil gratuit, rapide et 100% local.">
+    <meta name="keywords" content="supprimer fond image, détourage gratuit, redimensionner image en ligne, convertisseur PNG JPG WebP, pipette magique image">
     <meta name="author" content="Micfri">
+
+    <meta property="og:title" content="ImageConvert Pro | Studio de Retouche Gratuit">
+    <meta property="og:description" content="Détourage intelligent et conversion d'images en un clic.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ton-site.com">
+    <meta property="og:image" content="https://ton-site.com/preview-image.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ImageConvert Pro">
+    <meta name="twitter:description" content="L'outil de détourage d'image ultra-rapide.">
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 
- 
-    <script src="/Convertisseurs/coi-serviceworker.js"></script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg/0.11.6/ffmpeg.min.js"></script>
 
 <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/",
-      "@type": "WebApplication",
-      "name": "MultiConvert Pro",
-      "operatingSystem": "All",
-      "applicationCategory": "DesignApplication",
-      "description": "Outil de détourage d'image et convertisseur audio universel."
-    }
-    </script>
+{
+  "@context": "https://schema.org/",
+  "@type": "WebApplication",
+  "name": "ImageConvert Pro",
+  "operatingSystem": "All",
+  "applicationCategory": "DesignApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "description": "Outil de détourage d'image par pipette magique et redimensionnement en temps réel."
+}
+</script>
+
+
 </head>
 <body>
 
     <div class="app-container">
-        <header>
-            <button id="theme-switch" class="theme-toggle">🌙 Mode Sombre</button>
-            <h1 class="logo">✨ MultiConvert <span>Pro</span></h1>
-            <p class="subtitle">Par <strong>Micfri</strong> • Studio Multimédia 100% Local & Privé</p>
-            
-            <div class="main-nav">
-                <button id="tab-img" class="tab-btn active" onclick="switchTab('image-section', this)">🖼️ Images</button>
-                <button id="tab-audio" class="tab-btn" onclick="switchTab('audio-section', this)">🎵 Audio</button>
-            </div>
-        </header>
+<header>
+    <button id="theme-switch" class="theme-toggle">🌙 Mode Sombre</button>
+    <h1 class="logo">✨ ImageConvert <span>Pro</span></h1>
+    <p class="subtitle">Par <strong>Micfri</strong> • Suppression des fonds & Redimensionnement, conversion dans plusieurs formats, Gratuit</p>
+</header>
 
         <main>
-            <div id="image-section" class="tab-content">
-                <div id="drop-zone" class="upload-section">
-                    <input type="file" id="upload" accept="image/*" hidden>
-                    <label for="upload" class="upload-card">
-    <div class="icon-circle">📂</div>
-    <h2>Glissez votre image ici</h2>
-    <p>Détourage pipette & Redimensionnement</p>
-    
-    <div class="format-badges">
-        <span class="badge img-badge">PNG</span>
-        <span class="badge img-badge">JPG</span>
-        <span class="badge img-badge">WEBP</span>
-        <span class="badge">BMP</span>
-        <span class="badge img-badge">ICO</span>
-    </div>
-</label>
+            <div id="drop-zone" class="upload-section">
+                <input type="file" id="upload" accept="image/*" hidden>
+                <label for="upload" class="upload-card">
+                    <div class="icon-circle">📂</div>
+                    <h2>Glissez votre image ici</h2>
+                    <p>ou cliquez pour parcourir vos fichiers</p>
+                    <div class="format-badges">
+                        <span class="badge">PNG</span>
+                        <span class="badge">JPG</span>
+                        <span class="badge">WEBP</span>
+                        <span class="badge">BMP</span>
+                    </div>
+                </label>
+            </div>
+
+            <div id="preview-container" class="editor-grid" style="display:none;">
+                <div class="preview-card">
+                    <div class="canvas-wrapper">
+                        <canvas id="main-canvas"></canvas>
+                    </div>
+                    <p class="canvas-hint">🎯 Cliquez sur l'image pour choisir la couleur à effacer</p>
                 </div>
 
-                <div id="preview-container" class="editor-grid" style="display:none;">
-                    <div class="preview-card">
-                        <div class="canvas-wrapper">
-                            <canvas id="main-canvas"></canvas>
+                <div class="sidebar">
+                    <div class="control-group">
+                        <h3>🎨 Retouche intelligente</h3>
+                        <div class="label-row">
+                            <span>Couleur ciblée</span>
+                            <div id="color-preview" title="Couleur actuellement sélectionnée"></div>
                         </div>
-                        <p class="canvas-hint">🎯 Cliquez sur l'image pour choisir la couleur à effacer</p>
+                        <div class="label-row">
+                            <span>Supprimer le fond</span>
+                            <b id="tolerance-value">80</b>
+                        </div>
+                        <input type="range" id="tolerance-range" min="0" max="255" value="80">
+                        <small class="hint">Ajustez pour effacer les pixels parasites.</small>
                     </div>
 
-                    <div class="sidebar">
-                        <div class="control-group">
-                            <h3>🎨 Retouche intelligente</h3>
-                            <div class="label-row">
-                                <span>Couleur ciblée</span>
-                                <div id="color-preview" title="Couleur sélectionnée"></div>
-                            </div>
-                            <div class="label-row">
-                                <span>Tolérance</span>
-                                <b id="tolerance-value">80</b>
-                            </div>
-                            <input type="range" id="tolerance-range" min="0" max="255" value="80">
-                        </div>
-
-                        <div class="control-group">
+                    <div class="control-group">
                         <h3>📏 Dimensions (Pixels)</h3>
                         <div class="resize-inputs">
                             <div class="input-box">
@@ -100,111 +106,106 @@
                             <input type="checkbox" id="aspect-ratio" checked> Conserver les proportions
                         </label>
                     </div>
-                        <div class="control-group">
-                            <h3>📦 Exportation</h3>
-<select id="format-select">
-    <option value="image/png">PNG (Transparence)</option>
-    <option value="image/jpeg">JPG (Léger)</option>
-    <option value="image/webp">WebP (Optimisé)</option>
-    <option value="image/bmp">BMP (Qualité Windows)</option>
-    <option value="image/x-icon">ICO (Favicon/Icône)</option> </select>
-                            <div class="file-info">
+
+                    <div class="control-group">
+                        <h3>📦 Exportation</h3>
+                        <label for="format-select" class="field-label">Format de sortie</label>
+                        <select id="format-select">
+                            <option value="image/png">PNG (Transparence préservée)</option>
+                            <option value="image/jpeg">JPG (Fond blanc, léger)</option>
+                            <option value="image/webp">WebP (Optimisé Web)</option>
+                            <option value="image/bmp">BMP (Qualité Windows)</option>
+                        </select>
+                        <div class="file-info">
                             Poids estimé : <span id="file-size">--</span>
                         </div>
-                        </div>
-
-                        <div class="actions">
-                            <button id="download-btn" class="btn-primary">📥 Télécharger</button>
-                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Effacer tout</button>
-                        </div>
-                    </div> 
-                </div>
-            </div>
-
-            <div id="audio-section" class="tab-content" style="display:none;">
-                <div class="upload-section">
-                    <input type="file" id="audio-upload" accept="audio/mp3,audio/wav,audio/mpeg" hidden>
-                    <label for="audio-upload" class="upload-card">
-                        <div class="icon-circle">🎵</div>
-                        <h2>Glissez votre MP3 ici</h2>
-                        <p>Conversion instantanée et locale</p>
- <div class="format-badges">
-    <span class="badge">MP3</span>
-    <span class="badge">OGG</span>
-    <span class="badge">WAV</span>
-    <span class="badge">AAC</span>
-    <span class="badge">FLAC</span>
-    <span class="badge">M4A</span>
-</div>
-                    </label>
-                </div>
-
-                <div id="audio-processing" class="editor-grid" style="display:none; margin-top:20px;">
-                    <div class="preview-card">
-                        <div class="audio-info-box">
-                            <div class="audio-icon-large">🎼</div>
-                            <h4 id="audio-filename">Fichier sélectionné</h4>
-    
-                            <div class="progress-container" style="width:100%; background:#eee; border-radius:10px; height:10px; margin:10px 0; overflow:hidden; display:none;" id="audio-progress-bar">
-                            <div id="audio-progress-fill" style="width:0%; height:100%; background:var(--primary); transition: width 0.3s;"></div>
-                        </div>
-
-    <div id="conv-status" class="status-badge">En attente</div>
-</div>
                     </div>
 
-                    <div class="sidebar">
-                        <div class="control-group">
-                            <h3>📦 Format de sortie</h3>
-                           <select id="audio-format-select" class="format-select">
-    <option value="mp3">MP3 (Standard)</option>
-    <option value="wav">WAV (Haute qualité)</option>
-    <option value="ogg">OGG (Web)</option>
-    <option value="aac">AAC (Apple/iTunes)</option>
-    <option value="flac">FLAC (Sans perte)</option>
-    <option value="m4a">M4A (Moderne)</option>
-    <option value="opus">OPUS (Voix/Streaming)</option>
-</select>
+                    <div class="actions">
+                        <button id="download-btn" class="btn-primary">📥 Télécharger l'image</button>
+                        <div class="btn-row">
+                            <button id="reset-image-btn" class="btn-ghost">🔄 Réinitialiser</button>
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouvelle image</button>
                         </div>
-                        <button id="convert-audio-btn" class="btn-primary">⚡ Lancer la conversion</button>
-                        <div id="audio-download-link" style="margin-top:15px;"></div>
                     </div>
-                </div>
+                    <div class="share-section">
+    <p>Partager l'outil :</p>
+    <div class="share-buttons">
+        <a id="share-link" title="Copier le lien" class="share-btn">🔗</a>
+        <a id="share-wa" target="_blank" title="Partager sur WhatsApp" class="share-btn">📱</a>
+        <a id="share-tw" target="_blank" title="Partager sur X" class="share-btn">🐦</a>
+    </div>
+</div>
+                </div> 
             </div>
+
 
             <section class="seo-content">
-                <div class="seo-grid">
-                    <article>
-                        <h3>✂️ Retouche Photo</h3>
-                        <p>Détourage intelligent par pipette et redimensionnement sans perte de qualité.</p>
-                    </article>
-                    <article>
-                        <h3>🎵 Conversion Audio</h3>
-                        <p>Transformez vos MP3 en OGG ou WAV instantanément sans envoyer vos fichiers sur un serveur.</p>
-                    </article>
-                    <article>
-                        <h3>🔒 100% Privé</h3>
-                        <p>Tous les traitements s'effectuent dans votre navigateur. Vos données ne nous quittent jamais.</p>
-                    </article>
-                </div>
-            </section>
+    <div class="seo-grid">
+        <article>
+            <h3>✂️ Pourquoi détourer vos images ?</h3>
+            <p>Le détourage permet de créer des fichiers <strong>PNG transparents</strong> idéaux pour les logos, les fiches produits e-commerce et les montages graphiques. Avec notre <strong>pipette magique</strong>, supprimez n'importe quelle couleur en un clic.</p>
+        </article>
+        <article>
+            <h3>📐 Redimensionnement sans perte</h3>
+            <p>Ajustez la largeur et la hauteur de vos visuels instantanément. Notre outil préserve la qualité et vous permet de préparer vos images pour Instagram, Facebook ou vos sites web en respectant les <strong>proportions d'aspect</strong>.</p>
+        </article>
+        <article>
+            <h3>🔒 Confidentialité et Sécurité</h3>
+            <p>Contrairement aux autres convertisseurs en ligne, <strong>ImageConvert Pro</strong> traite vos données localement. Vos photos ne sont jamais téléchargées sur un serveur, garantissant une sécurité totale de vos données privées.</p>
+        </article>
+    </div>
+</section>
+
+
+
+
         </main>
 
-        <footer class="app-footer">
-            <div class="footer-content">
-                <p>Conçu avec ❤️ par <strong>Micfri</strong> &copy; 2025</p>
-                <div class="footer-links">
-                    <a href="https://github.com/mikefri" target="_blank">Mon GitHub</a>
+        <button id="help-btn" class="help-trigger" title="Besoin d'aide ?">?</button>
+
+        <div id="help-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>💡 Comment ça marche ?</h2>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <h4>🎯 Pipette magique</h4>
+                        <p>Par défaut, l'outil efface le fond. Vous pouvez <b>cliquer n'importe où sur l'image</b> pour choisir une autre couleur à supprimer.</p>
+                    </div>
+                    <div class="help-item">
+                        <h4>📏 Taille sur mesure</h4>
+                        <p>Modifiez les pixels pour redimensionner. Idéal pour passer d'une grande photo à une petite icône.</p>
+                    </div>
+                    <div class="help-item">
+                        <h4>💾 Formats</h4>
+                        <p>Le <b>PNG</b> est indispensable si vous voulez que votre image reste sans fond (transparente).</p>
+                    </div>
                 </div>
-                <div class="kofi-section">
-                    <a href="https://ko-fi.com/mikefri" target="_blank">
-                        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Soutenir sur Ko-fi" style="height: 36px;">
-                    </a>
-                </div>
+                <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">J'ai compris</button>
             </div>
-        </footer>
+        </div>
+<footer class="app-footer">
+    <div class="footer-content">
+        <p>Conçu avec ❤️ par <strong>Micfri</strong> &copy; 2025</p>
+        
+        <div class="footer-links">
+            <a href="https://github.com/mikefri" target="_blank" rel="noopener">Mon GitHub</a>
+        </div>
+
+        <div class="kofi-section">
+            <p style="font-size: 0.85em; color: #888; margin-bottom: 10px;">Si cet outil vous est utile, vous pouvez me soutenir :</p>
+            <a href="https://ko-fi.com/mikefri" target="_blank" rel="noopener">
+                <img src="https://ko-fi.com/img/githubbutton_sm.svg" 
+                     alt="Soutenir sur Ko-fi" 
+                     style="height: 36px; border: 0; border-radius: 5px;">
+            </a>
+        </div>
+    </div>
+</footer>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
