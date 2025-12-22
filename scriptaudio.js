@@ -132,10 +132,41 @@ downloadBtn.addEventListener('click', async () => {
     }
 });
 
-// --- 4. CHANGEMENT DE THÈME ---
+// --- LOGIQUE THÈME SOMBRE (Version corrigée) ---
 const themeBtn = document.getElementById('theme-switch');
-if(themeBtn) {
-    themeBtn.onclick = () => {
-        document.documentElement.toggleAttribute('data-theme');
-    };
+const themeIcon = document.getElementById('theme-icon');
+const themeText = document.getElementById('theme-text');
+
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if(themeIcon) themeIcon.innerText = "☀️";
+        if(themeText) themeText.innerText = "Mode Clair";
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        if(themeIcon) themeIcon.innerText = "🌙";
+        if(themeText) themeText.innerText = "Mode Sombre";
+    }
+}
+
+// Vérification au chargement
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') applyTheme('dark');
+
+// L'écouteur d'événement
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.hasAttribute('data-theme');
+        const newTheme = isDark ? 'light' : 'dark';
+        
+        // Petite animation de rotation sur l'icône
+        if(themeIcon) {
+            themeIcon.style.transition = "transform 0.5s ease";
+            themeIcon.style.transform = "rotate(360deg)";
+            setTimeout(() => themeIcon.style.transform = "rotate(0deg)", 500);
+        }
+        
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
 }
