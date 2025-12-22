@@ -144,11 +144,15 @@
                     <div class="sidebar">
                         <div class="control-group">
                             <h3>📦 Format de sortie</h3>
-                            <select id="audio-format-select">
-                                <option value="ogg">OGG (Vorbis)</option>
-                                <option value="mp3">MP3 (MPEG)</option>
-                                <option value="wav">WAV (Sans compression)</option>
-                            </select>
+                           <select id="audio-format-select" class="format-select">
+    <option value="mp3">MP3 (Standard)</option>
+    <option value="wav">WAV (Haute qualité)</option>
+    <option value="ogg">OGG (Web)</option>
+    <option value="aac">AAC (Apple/iTunes)</option>
+    <option value="flac">FLAC (Sans perte)</option>
+    <option value="m4a">M4A (Moderne)</option>
+    <option value="opus">OPUS (Voix/Streaming)</option>
+</select>
                         </div>
                         <button id="convert-audio-btn" class="btn-primary">⚡ Lancer la conversion</button>
                         <div id="audio-download-link" style="margin-top:15px;"></div>
