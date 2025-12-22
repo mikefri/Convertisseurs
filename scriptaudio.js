@@ -1,15 +1,16 @@
 /**
  * AudioConvert Pro - scriptaudio.js
- * Gère l'interface, la préécoute et la conversion réelle
+ * Version finale compatible avec coi-serviceworker.js
  */
 
 const { createFFmpeg, fetchFile } = FFmpeg;
 
-// Initialisation de FFmpeg 0.11.6
-// Note : Le coi-serviceworker.js permettra à SharedArrayBuffer d'être défini
-const ffmpeg = createFFmpeg({ log: true });
+// Initialisation moderne de FFmpeg
+const ffmpeg = createFFmpeg({ 
+    log: true 
+});
 
-// --- SÉLECTEURS UI ---
+// --- ÉLÉMENTS DE L'INTERFACE ---
 const upload = document.getElementById('upload');
 const dropZone = document.getElementById('drop-zone');
 const previewContainer = document.getElementById('preview-container');
@@ -23,22 +24,20 @@ const formatSelect = document.getElementById('format-select');
 const downloadBtn = document.getElementById('download-btn');
 const fileSizeDisplay = document.getElementById('file-size');
 
-// --- 1. CHARGEMENT ET PRÉÉCOUTE ---
+// --- 1. LECTURE AUDIO & APPERÇU ---
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
         fileNameDisplay.innerText = file.name;
-        // Création de l'URL pour que le lecteur <audio> puisse lire le fichier
-        const url = URL.createObjectURL(file);
-        audioControl.src = url;
+        audioControl.src = URL.createObjectURL(file);
         
-        // Affichage de la zone d'édition
+        // Affiche l'éditeur et cache la zone d'upload
         if(dropZone) dropZone.style.display = 'none';
         if(previewContainer) previewContainer.style.display = 'grid';
     }
 });
 
-// Mise à jour de la barre de progression (violette) pendant la lecture
+// Met à jour la barre de progression violette pendant l'écoute
 audioControl.ontimeupdate = () => {
     if (audioControl.duration) {
         const percentage = (audioControl.currentTime / audioControl.duration) * 100;
@@ -46,7 +45,7 @@ audioControl.ontimeupdate = () => {
     }
 };
 
-// Affichage de la durée dès que le fichier est chargé
+// Affiche la durée quand le fichier est prêt
 audioControl.onloadedmetadata = () => {
     const min = Math.floor(audioControl.duration / 60);
     const sec = Math.floor(audioControl.duration % 60);
@@ -54,10 +53,9 @@ audioControl.onloadedmetadata = () => {
     updateEstimation();
 };
 
-// --- 2. GESTION DU BITRATE ET ESTIMATION ---
+// --- 2. ESTIMATION DU POIDS DU FICHIER ---
 function updateEstimation() {
     const format = formatSelect.value;
-    // On n'estime que pour les formats compressés (MP3, OGG, M4A, AAC)
     const isLossy = ['mp3', 'ogg', 'm4a', 'aac'].includes(format);
     
     if (audioControl.duration && isLossy) {
@@ -76,7 +74,7 @@ bitrateRange.addEventListener('input', () => {
 
 formatSelect.addEventListener('change', updateEstimation);
 
-// --- 3. CONVERSION RÉELLE (L'action du bouton) ---
+// --- 3. CONVERSION RÉELLE (ACTION DU BOUTON) ---
 downloadBtn.addEventListener('click', async () => {
     const file = upload.files[0];
     if (!file) return;
@@ -85,10 +83,10 @@ downloadBtn.addEventListener('click', async () => {
     const bitrate = bitrateRange.value;
 
     downloadBtn.disabled = true;
-    downloadBtn.innerText = "⏳ Chargement moteur...";
-    
+    downloadBtn.innerText = "⏳ Chargement du moteur...";
+
     try {
-        // C'est ici que SharedArrayBuffer est requis
+        // Chargement du moteur FFmpeg (Maintenant débloqué par le point vert !)
         if (!ffmpeg.isLoaded()) {
             await ffmpeg.load();
         }
@@ -97,37 +95,34 @@ downloadBtn.addEventListener('click', async () => {
         const inputName = `input.${inputExt}`;
         const outputName = `output.${outFormat}`;
 
-        // Charger le fichier dans le système FFmpeg
+        // Transfère le fichier vers la mémoire de FFmpeg
         ffmpeg.FS('writeFile', inputName, await fetchFile(file));
         
-        downloadBtn.innerText = "⚙️ Encodage en cours...";
+        downloadBtn.innerText = "⚙️ Encodage réel en cours...";
         
+        // Commande FFmpeg : réduit réellement le poids du fichier
         let args = ['-i', inputName];
-        
-        // Appliquer le bitrate si le format n'est pas WAV ou FLAC
         if (['mp3', 'ogg', 'm4a', 'aac'].includes(outFormat)) {
             args.push('-b:a', `${bitrate}k`);
         }
-        
         args.push(outputName);
 
-        // Lancer la conversion réelle
         await ffmpeg.run(...args);
 
-        // Récupérer le fichier converti
+        // Récupère le fichier final converti
         const data = ffmpeg.FS('readFile', outputName);
         const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outFormat}` }));
         
-        // Déclencher le téléchargement
+        // Téléchargement automatique
         const link = document.createElement('a');
         link.href = url;
         link.download = `audioconvert-${Date.now()}.${outFormat}`;
         link.click();
 
-        downloadBtn.innerText = "✅ Terminé !";
+        downloadBtn.innerText = "✅ Succès !";
     } catch (error) {
         console.error("Erreur FFmpeg:", error);
-        alert("Erreur de sécurité : SharedArrayBuffer n'est pas activé. Vérifiez que coi-serviceworker.js est bien à la racine de votre projet GitHub.");
+        alert("Une erreur est survenue pendant la conversion.");
         downloadBtn.innerText = "❌ Erreur";
     } finally {
         setTimeout(() => {
@@ -137,17 +132,10 @@ downloadBtn.addEventListener('click', async () => {
     }
 });
 
-// --- 4. THÈME SOMBRE ---
+// --- 4. CHANGEMENT DE THÈME ---
 const themeBtn = document.getElementById('theme-switch');
 if(themeBtn) {
     themeBtn.onclick = () => {
-        const isDark = document.documentElement.hasAttribute('data-theme');
-        if (isDark) {
-            document.documentElement.removeAttribute('data-theme');
-            themeBtn.innerText = "🌙 Mode Sombre";
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeBtn.innerText = "☀️ Mode Clair";
-        }
+        document.documentElement.toggleAttribute('data-theme');
     };
 }
