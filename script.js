@@ -113,6 +113,18 @@ if (upload && canvas) {
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: false });
 
+// Écouteur de progression
+ffmpeg.setProgress(({ ratio }) => {
+    const progressFill = document.getElementById('audio-progress-fill');
+    const progressBar = document.getElementById('audio-progress-bar');
+    if (progressBar) progressBar.style.display = 'block';
+    if (progressFill) {
+        const percentage = Math.round(ratio * 100);
+        progressFill.style.width = percentage + '%';
+        document.getElementById('conv-status').innerText = `Conversion : ${percentage}%`;
+    }
+});
+
 const audioUpload = document.getElementById('audio-upload');
 const convertAudioBtn = document.getElementById('convert-audio-btn');
 const audioStatus = document.getElementById('conv-status');
@@ -122,11 +134,12 @@ if (audioUpload) {
     audioUpload.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            const proc = document.getElementById('audio-processing');
-            if (proc) proc.style.display = 'grid';
-            const nameDisp = document.getElementById('audio-filename');
-            if (nameDisp) nameDisp.innerText = file.name;
+            document.getElementById('audio-processing').style.display = 'grid';
+            document.getElementById('audio-filename').innerText = file.name;
             if (audioStatus) audioStatus.innerText = "Prêt à convertir";
+            // Réinitialise la barre
+            document.getElementById('audio-progress-fill').style.width = '0%';
+            document.getElementById('audio-progress-bar').style.display = 'none';
         }
     });
 }
@@ -139,10 +152,9 @@ if (convertAudioBtn) {
         
         try {
             convertAudioBtn.disabled = true;
-            if (audioStatus) audioStatus.innerText = "⏳ Chargement du moteur...";
+            if (audioStatus) audioStatus.innerText = "⏳ Chargement...";
             if (!ffmpeg.isLoaded()) await ffmpeg.load();
             
-            if (audioStatus) audioStatus.innerText = "⚙️ Conversion en cours...";
             ffmpeg.FS('writeFile', 'input', await fetchFile(file));
             await ffmpeg.run('-i', 'input', `output.${outFormat}`);
             
@@ -155,7 +167,7 @@ if (convertAudioBtn) {
             if (audioStatus) audioStatus.innerText = "✅ Terminé !";
         } catch (err) {
             console.error(err);
-            if (audioStatus) audioStatus.innerText = "❌ Erreur de conversion";
+            if (audioStatus) audioStatus.innerText = "❌ Erreur";
         } finally {
             convertAudioBtn.disabled = false;
         }
