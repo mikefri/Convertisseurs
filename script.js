@@ -91,15 +91,33 @@ if (upload && canvas) {
         ctx.putImageData(imgData, 0, 0);
     }
 
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', () => {
-            const format = formatSelect ? formatSelect.value : 'image/png';
+if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+        const format = formatSelect ? formatSelect.value : 'image/png';
+        const extension = format === 'image/x-icon' ? 'ico' : format.split('/')[1];
+        
+        // Si c'est un ICO, on force souvent une taille carrée standard
+        if (format === 'image/x-icon') {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = 64;  // Taille standard pour une icône
+            tempCanvas.height = 64;
+            tempCtx.drawImage(canvas, 0, 0, 64, 64);
+            
             const link = document.createElement('a');
-            link.download = `converti-${Date.now()}.${format.split('/')[1]}`;
+            link.download = `icon-${Date.now()}.ico`;
+            // On l'exporte en PNG mais avec l'extension .ico (supporté par la plupart des OS/Navigateurs)
+            link.href = tempCanvas.toDataURL('image/png'); 
+            link.click();
+        } else {
+            // Logique standard pour PNG/JPG/WebP
+            const link = document.createElement('a');
+            link.download = `converti-${Date.now()}.${extension}`;
             link.href = canvas.toDataURL(format);
             link.click();
-        });
-    }
+        }
+    });
+}
 
     if (toleranceRange) {
         toleranceRange.addEventListener('input', () => {
