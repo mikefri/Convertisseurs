@@ -1,7 +1,8 @@
 const { createFFmpeg, fetchFile } = FFmpeg;
+
+// Configuration cruciale pour éviter l'erreur SharedArrayBuffer
 const ffmpeg = createFFmpeg({ 
     log: true,
-    // On force l'utilisation d'un seul thread pour éviter l'erreur SharedArrayBuffer
     corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js'
 });
 
@@ -75,33 +76,48 @@ downloadBtn.addEventListener('click', async () => {
     if (!file) return;
 
     downloadBtn.disabled = true;
-    downloadBtn.innerText = "⏳ Chargement...";
+    downloadBtn.innerText = "⏳ Initialisation...";
 
-    // Chargement spécifique version 0.10
-    if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
+    try {
+        // Chargement du moteur
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        const inputExt = file.name.split('.').pop();
+        const outputExt = formatSelect.value;
+        const outputName = `output.${outputExt}`;
+
+        // Ecriture du fichier
+        await ffmpeg.FS('writeFile', `input.${inputExt}`, await fetchFile(file));
+        
+        downloadBtn.innerText = "⚙️ Conversion en cours...";
+
+        // EXECUTION DE LA COMMANDE
+        // On retire les options qui pourraient forcer le multi-threading
+        if (outputExt === 'mp3' || outputExt === 'ogg') {
+            await ffmpeg.run('-i', `input.${inputExt}`, '-b:a', `${bitrateRange.value}k`, outputName);
+        } else {
+            await ffmpeg.run('-i', `input.${inputExt}`, outputName);
+        }
+
+        // Lecture du résultat
+        const data = ffmpeg.FS('readFile', outputName);
+        const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outputExt}` }));
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `audiopro-${Date.now()}.${outputExt}`;
+        link.click();
+
+        downloadBtn.innerText = "✅ Terminé !";
+    } catch (e) {
+        console.error(e);
+        downloadBtn.innerText = "❌ Erreur de sécurité";
+        alert("Votre navigateur bloque la conversion. Essayez sur Chrome ou désactivez vos extensions de sécurité.");
+    } finally {
+        downloadBtn.disabled = false;
     }
-
-    const inputExt = file.name.split('.').pop();
-    const outputName = `output.${formatSelect.value}`;
-
-    await ffmpeg.FS('writeFile', `input.${inputExt}`, await fetchFile(file));
-    
-    downloadBtn.innerText = "⚙️ Conversion...";
-    
-    // Commande FFmpeg
-    await ffmpeg.run('-i', `input.${inputExt}`, '-b:a', `${bitrateRange.value}k`, outputName);
-
-    const data = ffmpeg.FS('readFile', outputName);
-    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mpeg' }));
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `converti-${Date.now()}.${formatSelect.value}`;
-    link.click();
-
-    downloadBtn.disabled = false;
-    downloadBtn.innerText = "📥 Télécharger à nouveau";
 });
 
 // Thème & Modal (restaurés)
