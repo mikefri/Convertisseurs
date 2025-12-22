@@ -1,12 +1,12 @@
+/**
+ * AudioConvert Pro - Script Final
+ * Gère la lecture, l'UI et la conversion réelle via FFmpeg
+ */
+
 const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
 
-// Configuration cruciale pour éviter l'erreur SharedArrayBuffer
-const ffmpeg = createFFmpeg({ 
-    log: true,
-    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js'
-});
-
-// Éléments UI
+// --- ÉLÉMENTS UI ---
 const upload = document.getElementById('upload');
 const dropZone = document.getElementById('drop-zone');
 const previewContainer = document.getElementById('preview-container');
@@ -19,37 +19,47 @@ const bitrateValue = document.getElementById('bitrate-value');
 const formatSelect = document.getElementById('format-select');
 const downloadBtn = document.getElementById('download-btn');
 const fileSizeDisplay = document.getElementById('file-size');
-const bitrateGroup = document.getElementById('bitrate-group');
 
-// Masquer le bitrate pour le WAV (format non-compressé)
-formatSelect.addEventListener('change', () => {
-    if (formatSelect.value === 'wav' || formatSelect.value === 'flac') {
-        bitrateGroup.style.opacity = "0.5";
-        bitrateGroup.style.pointerEvents = "none";
-        fileSizeDisplay.innerText = "Calcul non disponible (Lossless)";
-    } else {
-        bitrateGroup.style.opacity = "1";
-        bitrateGroup.style.pointerEvents = "all";
-        updateEstimation();
-    }
-});
-
-// --- GESTION FICHIER & ESTIMATION ---
+// --- 1. GESTION DU FICHIER & LECTURE ---
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
         fileNameDisplay.innerText = file.name;
-        audioControl.src = URL.createObjectURL(file);
+        // Création de l'URL pour la préécoute locale
+        const url = URL.createObjectURL(file);
+        audioControl.src = url;
+        
+        // Affichage de l'interface d'édition
         dropZone.style.display = 'none';
         previewContainer.style.display = 'grid';
     }
 });
 
+// Mise à jour de la barre de progression pendant la lecture
+audioControl.ontimeupdate = () => {
+    if (audioControl.duration) {
+        const percentage = (audioControl.currentTime / audioControl.duration) * 100;
+        progressFill.style.width = percentage + "%";
+    }
+};
+
+// Affichage de la durée totale
+audioControl.onloadedmetadata = () => {
+    const min = Math.floor(audioControl.duration / 60);
+    const sec = Math.floor(audioControl.duration % 60);
+    durationDisplay.innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    updateEstimation();
+};
+
+// --- 2. ESTIMATION DE LA TAILLE ---
 function updateEstimation() {
-    if (audioControl.duration && formatSelect.value !== 'wav' && formatSelect.value !== 'flac') {
+    const format = formatSelect.value;
+    if (audioControl.duration && format !== 'wav' && format !== 'flac') {
         const kbps = parseInt(bitrateRange.value);
         const sizeMb = (kbps * audioControl.duration) / 8000;
         fileSizeDisplay.innerText = `~${sizeMb.toFixed(1)} Mo`;
+    } else {
+        fileSizeDisplay.innerText = "--";
     }
 }
 
@@ -58,71 +68,76 @@ bitrateRange.addEventListener('input', () => {
     updateEstimation();
 });
 
-audioControl.onloadedmetadata = () => {
-    const min = Math.floor(audioControl.duration / 60);
-    const sec = Math.floor(audioControl.duration % 60);
-    durationDisplay.innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
-    updateEstimation();
-};
+formatSelect.addEventListener('change', updateEstimation);
 
-audioControl.ontimeupdate = () => {
-    const percentage = (audioControl.currentTime / audioControl.duration) * 100;
-    progressFill.style.width = percentage + "%";
-};
-
-// --- MOTEUR DE CONVERSION ---
+// --- 3. MOTEUR DE CONVERSION (FFmpeg) ---
 downloadBtn.addEventListener('click', async () => {
     const file = upload.files[0];
     if (!file) return;
 
-    downloadBtn.disabled = true;
-    downloadBtn.innerText = "⏳ Initialisation...";
+    const outFormat = formatSelect.value;
+    const bitrate = bitrateRange.value;
 
+    downloadBtn.disabled = true;
+    downloadBtn.innerText = "⏳ Initialisation moteur...";
+    
     try {
-        // Chargement du moteur
-        if (!ffmpeg.isLoaded()) {
-            await ffmpeg.load();
-        }
+        // Chargement du moteur (débloqué par ton coi-serviceworker.js)
+        if (!ffmpeg.isLoaded()) await ffmpeg.load();
 
         const inputExt = file.name.split('.').pop();
-        const outputExt = formatSelect.value;
-        const outputName = `output.${outputExt}`;
+        const inputName = `input.${inputExt}`;
+        const outputName = `output.${outFormat}`;
 
-        // Ecriture du fichier
-        await ffmpeg.FS('writeFile', `input.${inputExt}`, await fetchFile(file));
+        // Écriture du fichier dans le système virtuel
+        ffmpeg.FS('writeFile', inputName, await fetchFile(file));
         
-        downloadBtn.innerText = "⚙️ Conversion en cours...";
-
-        // EXECUTION DE LA COMMANDE
-        // On retire les options qui pourraient forcer le multi-threading
-        if (outputExt === 'mp3' || outputExt === 'ogg') {
-            await ffmpeg.run('-i', `input.${inputExt}`, '-b:a', `${bitrateRange.value}k`, outputName);
-        } else {
-            await ffmpeg.run('-i', `input.${inputExt}`, outputName);
+        downloadBtn.innerText = "⚙️ Encodage réel...";
+        
+        // Préparation de la commande FFmpeg
+        let args = ['-i', inputName];
+        
+        // On n'applique le bitrate que pour les formats compressés
+        if (outFormat !== 'wav' && outFormat !== 'flac') {
+            args.push('-b:a', `${bitrate}k`);
         }
+        
+        args.push(outputName);
 
-        // Lecture du résultat
+        // Lancement de la conversion
+        await ffmpeg.run(...args);
+
+        // Lecture et téléchargement du résultat
         const data = ffmpeg.FS('readFile', outputName);
-        const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outputExt}` }));
+        const url = URL.createObjectURL(new Blob([data.buffer], { type: `audio/${outFormat}` }));
         
         const link = document.createElement('a');
         link.href = url;
-        link.download = `audiopro-${Date.now()}.${outputExt}`;
+        link.download = `audiopro-${Date.now()}.${outFormat}`;
         link.click();
 
         downloadBtn.innerText = "✅ Terminé !";
-    } catch (e) {
-        console.error(e);
-        downloadBtn.innerText = "❌ Erreur de sécurité";
-        alert("Votre navigateur bloque la conversion. Essayez sur Chrome ou désactivez vos extensions de sécurité.");
+    } catch (error) {
+        console.error(error);
+        alert("Erreur : Assurez-vous que coi-serviceworker.js est bien présent sur votre serveur.");
+        downloadBtn.innerText = "❌ Erreur";
     } finally {
-        downloadBtn.disabled = false;
+        setTimeout(() => {
+            downloadBtn.disabled = false;
+            downloadBtn.innerText = "📥 Convertir & Télécharger";
+        }, 3000);
     }
 });
 
-// Thème & Modal (restaurés)
-document.getElementById('theme-switch').onclick = () => {
-    document.documentElement.toggleAttribute('data-theme');
+// --- 4. THÈME SOMBRE ---
+const themeBtn = document.getElementById('theme-switch');
+themeBtn.onclick = () => {
+    const isDark = document.documentElement.hasAttribute('data-theme');
+    if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.innerText = "🌙 Mode Sombre";
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.innerText = "☀️ Mode Clair";
+    }
 };
-document.getElementById('help-btn').onclick = () => document.getElementById('help-modal').style.display = 'flex';
-document.querySelector('.close-modal').onclick = () => document.getElementById('help-modal').style.display = 'none';
