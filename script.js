@@ -115,16 +115,18 @@ const ffmpeg = createFFmpeg({ log: false });
 
 // Écouteur de progression
 ffmpeg.setProgress(({ ratio }) => {
-    const progressFill = document.getElementById('audio-progress-fill');
-    const progressBar = document.getElementById('audio-progress-bar');
-    const statusText = document.getElementById('conv-status');
+const progressFill = document.getElementById('audio-progress-fill');
+    const percentage = Math.round(ratio * 100);
 
-    if (progressBar) progressBar.style.display = 'block';
-    
     if (progressFill) {
-        const percentage = Math.round(ratio * 100);
         progressFill.style.width = percentage + '%';
-        if (statusText) statusText.innerText = `Conversion en cours... ${percentage}%`;
+        // On déplace le dégradé en fonction du pourcentage
+        progressFill.style.backgroundPosition = (100 - percentage) + '% 0%';
+        
+        // Change aussi la lueur pour qu'elle devienne verte à la fin
+        if (percentage > 80) {
+            progressFill.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.5)";
+        }
     }
 });
 
