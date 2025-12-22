@@ -30,11 +30,13 @@ if (upload && canvas) {
     const colorPreview = document.getElementById('color-preview');
     const inputW = document.getElementById('resize-w');
     const inputH = document.getElementById('resize-h');
-
+    const checkRatio = document.getElementById('aspect-ratio');
+    
     let imgElement = null;
     let ratio = 1;
     let targetColor = null;
 
+    // --- GESTION FICHIERS ---
     function handleFile(file) {
         if (!file || !file.type.startsWith('image/')) return;
         const reader = new FileReader();
@@ -44,7 +46,7 @@ if (upload && canvas) {
                 ratio = imgElement.width / imgElement.height;
                 if (inputW) inputW.value = imgElement.width;
                 if (inputH) inputH.value = imgElement.height;
-                targetColor = null;
+                targetColor = null; // Reset de la pipette lors d'un nouvel import
                 if (dropZone) dropZone.style.display = 'none';
                 if (previewContainer) previewContainer.style.display = 'grid';
                 processImage();
@@ -55,7 +57,14 @@ if (upload && canvas) {
     }
 
     upload.addEventListener('change', (e) => handleFile(e.target.files[0]));
+    dropZone.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(n => {
+    dropZone.addEventListener(n, (e) => { e.preventDefault(); e.stopPropagation(); });
+});
+    ['dragenter', 'dragover'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.add('highlight')));
+['dragleave', 'drop'].forEach(n => dropZone.addEventListener(n, () => dropZone.classList.remove('highlight')));
     
+    // --- GESTION DE LA PIPETTE (CLIC SUR IMAGE) ---
     canvas.addEventListener('click', (e) => {
         if (!imgElement) return;
         const rect = canvas.getBoundingClientRect();
@@ -68,22 +77,44 @@ if (upload && canvas) {
         processImage();
     });
 
+
+    // --- REDIMENSIONNEMENT TEMPS RÉEL ---
+function updateFromWidth() {
+    if(checkRatio.checked && imgElement) inputH.value = Math.round(inputW.value / ratio);
+    processImage();
+}
+function updateFromHeight() {
+    if(checkRatio.checked && imgElement) inputW.value = Math.round(inputH.value * ratio);
+    processImage();
+}
+
+inputW.addEventListener('input', updateFromWidth);
+inputH.addEventListener('input', updateFromHeight);
+formatSelect.addEventListener('change', processImage);
+
+
+    
+// --- TRAITEMENT ET ESTIMATION POIDS ---
     function processImage() {
         if (!imgElement) return;
         const w = (inputW ? parseInt(inputW.value) : 0) || imgElement.width;
         const h = (inputH ? parseInt(inputH.value) : 0) || imgElement.height;
         canvas.width = w; canvas.height = h;
+        // 1. Dessiner l'image originale redimensionnée
         ctx.clearRect(0, 0, w, h);
         ctx.drawImage(imgElement, 0, 0, w, h);
+        // 2. Récupérer les données pour le détourage
         const imgData = ctx.getImageData(0, 0, w, h);
         const data = imgData.data;
         const tolerance = toleranceRange ? parseInt(toleranceRange.value) : 80;
-        
+
+        // Définition de la couleur cible (Pipette ou pixel 0,0
         let rT, gT, bT;
         if (targetColor) { [rT, gT, bT] = targetColor; } 
         else { rT = data[0]; gT = data[1]; bT = data[2]; }
+        // Mise à jour visuelle de la pastille dans la sidebar
         if (colorPreview) colorPreview.style.backgroundColor = `rgb(${rT}, ${gT}, ${bT})`;
-
+        // 3. Algorithme de suppression de couleur
         for (let i = 0; i < data.length; i += 4) {
             const dist = Math.sqrt(Math.pow(data[i]-rT,2) + Math.pow(data[i+1]-gT,2) + Math.pow(data[i+2]-bT,2));
             if (dist < tolerance) data[i + 3] = 0;
@@ -91,6 +122,34 @@ if (upload && canvas) {
         ctx.putImageData(imgData, 0, 0);
     }
 
+    // 4. Estimation du poids
+    estimateSize();
+
+    function estimateSize() {
+    const dataUrl = canvas.toDataURL(formatSelect.value, 0.9);
+    const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+    if (sizeInBytes < 1024) fileSizeDisplay.innerText = sizeInBytes + " o";
+    else fileSizeDisplay.innerText = (sizeInBytes / 1024).toFixed(1) + " Ko";
+}
+
+toleranceRange.addEventListener('input', () => {
+    toleranceValue.innerText = toleranceRange.value;
+    processImage();
+});
+
+resetBtn.addEventListener('click', () => {
+    targetColor = null; // Reset de la pipette
+    toleranceRange.value = 80;
+    toleranceValue.innerText = "80";
+    if (imgElement) {
+        inputW.value = imgElement.width;
+        inputH.value = imgElement.height;
+    }
+    processImage();
+});
+
+
+    // --- EXPORT ---
 if (downloadBtn) {
     downloadBtn.addEventListener('click', () => {
         const format = formatSelect ? formatSelect.value : 'image/png';
@@ -272,3 +331,29 @@ document.querySelectorAll('.badge').forEach(badge => {
         }
     });
 });
+// --- LOGIQUE DE LA MODALE D'AIDE ---
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
+const closeModal = document.querySelector('.close-modal');
+
+if (helpBtn) {
+    helpBtn.onclick = () => helpModal.style.display = "flex";
+}
+if (closeModal) {
+    closeModal.onclick = () => helpModal.style.display = "none";
+}
+
+window.onclick = (event) => {
+    if (event.target == helpModal) helpModal.style.display = "none";
+}
+// --- LOGIQUE DE PARTAGE ---
+const currentUrl = encodeURIComponent(window.location.href);
+const shareText = encodeURIComponent("Regarde cet outil gratuit pour détourer et redimensionner des images en ligne ! ✨");
+
+document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${shareText}%20${currentUrl}`;
+document.getElementById('share-tw').href = `https://twitter.com/intent/tweet?text=${shareText}&url=${currentUrl}`;
+
+document.getElementById('share-link').onclick = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Lien copié dans le presse-papier ! 📋");
+};
