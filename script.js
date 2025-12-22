@@ -290,30 +290,29 @@ function applyTheme(theme) {
     const themeBtn = document.getElementById('theme-switch');
     if (theme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        if (themeBtn) themeBtn.innerText = "☀️ Mode Clair";
+        if (themeBtn) themeBtn.innerHTML = "☀️ Mode Clair";
     } else {
         document.documentElement.removeAttribute('data-theme');
-        if (themeBtn) themeBtn.innerText = "🌙 Mode Sombre";
+        if (themeBtn) themeBtn.innerHTML = "🌙 Mode Sombre";
     }
 }
 
+// On utilise l'ID correct "theme-switch"
 const themeSwitch = document.getElementById('theme-switch');
+
 if (themeSwitch) {
     themeSwitch.addEventListener('click', () => {
-        const newTheme = document.documentElement.hasAttribute('data-theme') ? 'light' : 'dark';
+        const isDark = document.documentElement.hasAttribute('data-theme');
+        const newTheme = isDark ? 'light' : 'dark';
         applyTheme(newTheme);
         localStorage.setItem('theme', newTheme);
     });
 }
-if (localStorage.getItem('theme') === 'dark') applyTheme('dark');
 
-// Sécurisation Aide/Partage (ces IDs doivent être dans le HTML pour fonctionner)
-const shareBtn = document.getElementById('share-link');
-if (shareBtn) {
-    shareBtn.onclick = () => {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Lien copié ! 📋");
-    };
+// Appliquer le thème stocké au chargement
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    applyTheme('dark');
 }
 
 // Rendre les badges de format cliquables
