@@ -185,3 +185,114 @@ header { text-align: center; margin-bottom: 30px; position: relative; }
     font-size: 12px; font-weight: 700; 
 }
 
+/* --- RESPONSIVE --- */
+@media (max-width: 950px) { 
+    .editor-grid { grid-template-columns: 1fr; } 
+    .sidebar { order: 2; }
+    .preview-card { order: 1; min-height: 400px; }
+}
+
+.seo-content {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.seo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.seo-content h3 {
+    color: var(--primary);
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.seo-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-sub);
+}
+
+.seo-content strong {
+    color: var(--text-main);
+}
+.share-section {
+    margin-top: 10px;
+    padding: 15px;
+    text-align: center;
+    border-top: 1px solid #f1f5f9;
+}
+
+.share-section p {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.share-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.1);
+}
+
+.app-footer {
+    margin-top: 50px;
+    padding: 30px;
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 14px;
+    border-top: 1px solid #e2e8f0;
+    width: 100%;
+}
+
+.app-footer strong {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.footer-links {
+    margin-top: 8px;
+}
+
+.footer-links a {
+    color: var(--text-sub);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+/* Petit ajustement pour le subtitle du header */
+.subtitle strong {
+    color: var(--text-main);
+}
