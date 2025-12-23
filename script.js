@@ -257,12 +257,4 @@ if (themeBtn) {
         localStorage.setItem('theme', newTheme);
     });
 }
-document.addEventListener('click', (e) => {
-    const link = e.target.closest('.nav-link');
-    if (link) {
-        e.preventDefault();
-        const targetUrl = link.getAttribute('href');
-        loadPage(targetUrl);
-    }
-});
 
