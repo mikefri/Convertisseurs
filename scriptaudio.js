@@ -170,3 +170,21 @@ if (themeBtn) {
         localStorage.setItem('theme', newTheme);
     });
 }
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        // On vérifie si le lien est interne
+        if (this.hostname === window.location.hostname) {
+            e.preventDefault(); // On stoppe le chargement immédiat
+            let target = this.href;
+
+            // On ajoute une classe de sortie au body
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.4s ease';
+
+            // On attend la fin de l'animation avant de changer de page
+            setTimeout(() => {
+                window.location.href = target;
+            }, 400);
+        }
+    });
+});
