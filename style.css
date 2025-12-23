@@ -9,6 +9,12 @@
     --border: #e2e8f0;
 }
 
+/* Transition douce pour tout le site */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
 /* Variables pour le Mode Sombre */
 [data-theme="dark"] {
     --bg: #0f172a;
@@ -18,40 +24,7 @@
     --border: #334155;
 }
 
-/* Transition douce globale */
-* {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Transition spécifique pour les éléments structurels (plus fluide) */
-body, .control-group, .preview-card, header, footer, .upload-section {
-    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body {
-    position: relative;
-    min-height: 100vh;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg);
-    color: var(--text-main);
-    margin: 0; 
-    display: flex; 
-    justify-content: center; 
-    padding: 40px 20px;
-}
-
-.app-container { width: 100%; max-width: 1100px; }
-
-/* --- HEADER --- */
-header { text-align: center; margin-bottom: 30px; }
-.logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
-.logo span { color: var(--primary); }
-.subtitle { color: var(--text-sub); margin-top: 5px; font-size: 14px; }
-.subtitle strong { color: var(--text-main); }
-
-/* --- THEME TOGGLE --- */
+/* Positionnement du bouton en haut à droite */
 .theme-toggle {
     position: absolute;
     top: 20px;
@@ -68,15 +41,32 @@ header { text-align: center; margin-bottom: 30px; }
     align-items: center;
     gap: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    z-index: 1001;
+    z-index: 1001; /* Pour rester au-dessus de tout */
 }
 .theme-toggle:hover {
     transform: translateY(-2px);
     border-color: var(--primary);
 }
-.theme-toggle:active {
-    transform: scale(0.95);
+
+/* On s'assure que le container parent permet le positionnement absolu */
+body {
+    position: relative;
+    min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    padding: 40px 20px;
 }
+
+.app-container { width: 100%; max-width: 1100px; }
+
+header { text-align: center; margin-bottom: 30px; }
+.logo { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
+.logo span { color: var(--primary); }
+.subtitle { color: var(--text-sub); margin-top: 5px; font-size: 14px; }
 
 /* --- ZONE UPLOAD --- */
 .upload-section {
@@ -94,13 +84,13 @@ header { text-align: center; margin-bottom: 30px; }
     font-size: 12px; font-weight: 700; 
 }
 
-/* --- GRID EDITOR & CANVAS --- */
+/* --- GRID EDITOR --- */
 .editor-grid { display: grid; grid-template-columns: 1fr 340px; gap: 30px; }
 
 .preview-card {
     background: var(--card); border-radius: 24px; padding: 25px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-    display: flex; flex-direction: column;
+    display: flex; flex-direction: column; /* Aligne canvas + hint verticalement */
     justify-content: center; align-items: center; min-height: 500px;
 }
 
@@ -113,18 +103,9 @@ header { text-align: center; margin-bottom: 30px; }
     background-size: 16px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-[data-theme="dark"] .canvas-wrapper {
-    background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
-                      linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
-                      linear-gradient(45deg, transparent 75%, #1e293b 75%), 
-                      linear-gradient(-45deg, transparent 75%, #1e293b 75%);
-    background-color: #0f172a;
-    border: 1px solid var(--primary);
-}
-
 canvas { 
     max-width: 100%; height: auto; display: block; 
-    cursor: crosshair;
+    cursor: crosshair; /* Curseur pipette */
     transition: transform 0.1s ease;
 }
 canvas:active { transform: scale(0.99); }
@@ -134,10 +115,6 @@ canvas:active { transform: scale(0.99); }
     background: #f1f5f9; padding: 8px 16px; border-radius: 12px;
     font-weight: 600;
 }
-[data-theme="dark"] .canvas-hint {
-    background: #1e293b;
-    color: var(--primary-light);
-}
 
 /* --- SIDEBAR & CONTROLS --- */
 .sidebar { display: flex; flex-direction: column; gap: 20px; }
@@ -146,6 +123,7 @@ canvas:active { transform: scale(0.99); }
 
 .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600; font-size: 14px; }
 
+/* Pastille de couleur sélectionnée */
 #color-preview {
     width: 24px; height: 24px; border-radius: 6px;
     border: 2px solid #e2e8f0; background-color: transparent;
@@ -219,52 +197,141 @@ select {
 .help-item h4 { margin: 0 0 6px 0; color: var(--primary); font-size: 16px; }
 .help-item p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-sub); }
 
-/* --- SHARE SECTION --- */
+/* --- RESPONSIVE --- */
+@media (max-width: 950px) { 
+    .editor-grid { grid-template-columns: 1fr; } 
+    .sidebar { order: 2; }
+    .preview-card { order: 1; min-height: 400px; }
+}
+
+.seo-content {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.seo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.seo-content h3 {
+    color: var(--primary);
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.seo-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-sub);
+}
+
+.seo-content strong {
+    color: var(--text-main);
+}
 .share-section {
-    margin-top: 10px; padding: 15px; text-align: center;
+    margin-top: 10px;
+    padding: 15px;
+    text-align: center;
     border-top: 1px solid #f1f5f9;
 }
+
 .share-section p {
-    font-size: 11px; font-weight: 800; text-transform: uppercase;
-    color: var(--text-sub); margin-bottom: 10px; letter-spacing: 0.5px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-sub);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
 }
-.share-buttons { display: flex; justify-content: center; gap: 12px; }
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
 .share-btn {
-    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-    text-decoration: none; font-size: 16px; cursor: pointer; transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
+
 .share-btn:hover {
     border-color: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(99, 102, 241, 0.1);
 }
 
-/* --- SEO & FOOTER --- */
-.seo-content {
-    margin-top: 60px; padding-top: 40px;
-    border-top: 1px solid #e2e8f0; text-align: left;
-}
-.seo-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;
-}
-.seo-content h3 { color: var(--primary); font-size: 18px; margin-bottom: 12px; }
-.seo-content p { font-size: 14px; line-height: 1.6; color: var(--text-sub); }
-.seo-content strong { color: var(--text-main); }
-
 .app-footer {
-    margin-top: 50px; padding: 30px; text-align: center;
-    color: var(--text-sub); font-size: 14px;
-    border-top: 1px solid #e2e8f0; width: 100%;
+    margin-top: 50px;
+    padding: 30px;
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 14px;
+    border-top: 1px solid #e2e8f0;
+    width: 100%;
 }
-.app-footer strong { color: var(--primary); font-weight: 800; }
-.footer-links { margin-top: 8px; }
-.footer-links a { color: var(--text-sub); text-decoration: none; transition: color 0.2s; }
-.footer-links a:hover { color: var(--primary); }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 950px) { 
-    .editor-grid { grid-template-columns: 1fr; } 
-    .sidebar { order: 2; }
-    .preview-card { order: 1; min-height: 400px; }
+.app-footer strong {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.footer-links {
+    margin-top: 8px;
+}
+
+.footer-links a {
+    color: var(--text-sub);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+/* Petit ajustement pour le subtitle du header */
+.subtitle strong {
+    color: var(--text-main);
+}
+
+/* Transition globale douce sur les couleurs */
+body, .control-group, .preview-card, header, footer, .upload-section {
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effet au survol du bouton en haut à droite */
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Adaptation du damier de transparence selon le thème */
+[data-theme="dark"] .canvas-wrapper {
+    background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
+                      linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #1e293b 75%), 
+                      linear-gradient(-45deg, transparent 75%, #1e293b 75%);
+    background-color: #0f172a; /* Fond du damier plus sombre */
+    border: 1px solid var(--primary);
+}
+
+[data-theme="dark"] .canvas-hint {
+    background: #1e293b;
+    color: var(--primary-light);
 }
