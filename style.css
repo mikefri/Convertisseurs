@@ -336,72 +336,45 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     color: var(--primary-light);
 }
 
-/* On centre la navigation sans cadre autour */
 .main-nav {
     display: flex;
-    gap: 20px;
-    padding: 20px;
+    gap: 12px;
+    padding: 15px;
     justify-content: center;
-    background: transparent; /* Pas de fond */
 }
 
-/* Style des liens */
 .nav-link {
     text-decoration: none;
-    color: #333; /* Change en #fff si ton fond est sombre */
-    padding: 10px 20px;
-    font-family: 'Poppins', sans-serif;
+    color: #4b5563; /* Gris foncé moderne */
+    padding: 10px 22px;
+    border-radius: 50px; /* Forme pilule */
+    font-family: 'Inter', sans-serif;
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 15px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    position: relative; /* Nécessaire pour l'animation de la ligne */
-    transition: color 0.3s ease, transform 0.2s ease;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e5e7eb; /* Bordure légère */
+    background-color: white;
 }
 
-/* Ligne invisible sous le bouton qui s'animera */
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 3px;
-    background: #6366f1; /* Couleur de la barre de sélection */
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-    border-radius: 5px;
-}
-
-/* Effet au survol (Hover) */
+/* Effet au survol */
 .nav-link:hover {
-    color: #6366f1;
-    transform: translateY(-2px);
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    transform: scale(1.05); /* S'agrandit légèrement */
 }
 
-.nav-link:hover::after {
-    width: 60%; /* La ligne s'allonge au survol */
-}
-
-/* État Actif : la ligne reste pleine */
+/* État Actif : Style sombre et élégant */
 .nav-link.active {
-    color: #6366f1;
-    font-weight: 700;
+    background-color: #1f2937; /* Fond noir/gris très foncé */
+    color: white;
+    border-color: #1f2937;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.nav-link.active::after {
-    width: 80%; /* La ligne est plus longue pour l'élément actif */
-    background: #6366f1;
-}
-
-/* Petit effet de pulse sur l'émoji au survol */
-.nav-link:hover span {
-    display: inline-block;
-    animation: bounce 0.5s ease;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
+/* Animation quand on clique */
+.nav-link:active {
+    transform: scale(0.95);
 }
