@@ -179,35 +179,3 @@ document.addEventListener('click', (e) => {
     }
 });
 
-async function loadPage(url) {
-    const main = document.querySelector('main');
-    
-    // 1. Début de la transition visuelle
-    main.classList.add('page-hidden');
-
-    // 2. Récupération de la nouvelle page en arrière-plan
-    const response = await fetch(url);
-    const html = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const newContent = doc.querySelector('main').innerHTML;
-    const newTitle = doc.title;
-
-    // 3. Injection rapide
-    setTimeout(() => {
-        main.innerHTML = newContent;
-        document.title = newTitle;
-        window.history.pushState({}, '', url);
-        
-        // Mise à jour visuelle des boutons du menu
-        document.querySelectorAll('.nav-link').forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('href') === url);
-        });
-
-        // 4. Fin de la transition
-        main.classList.remove('page-hidden');
-        
-        // RE-INITIALISER TES SCRIPTS ICI (ex: relancer les détecteurs de fichiers)
-        initApp(); 
-    }, 150); 
-}
