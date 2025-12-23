@@ -346,41 +346,40 @@ CSS
 /* Le conteneur est totalement invisible */
 .main-nav {
     display: flex;
-    gap: 15px;
-    padding: 20px;
+    gap: 8px; /* Espacement réduit entre les boutons */
+    padding: 10px;
     justify-content: center;
-    background: transparent; 
+    background: transparent;
 }
 
-/* Le bouton par défaut (couleur pleine, pas de transparence) */
 .nav-link {
     text-decoration: none;
-    color: #ffffff; /* Texte blanc */
-    background: #334155; /* Gris ardoise foncé opaque */
-    padding: 12px 24px;
-    border-radius: 10px;
+    color: #ffffff;
+    background: #334155;
+    /* Padding réduit : 6px en haut/bas, 14px à gauche/droite */
+    padding: 6px 14px; 
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
+    /* Taille de texte plus petite */
+    font-size: 0.85rem; 
     font-weight: 600;
     transition: all 0.2s ease;
     border: none;
+    white-space: nowrap; /* Empêche le texte de revenir à la ligne */
 }
 
-/* Au survol : il change de couleur */
 .nav-link:hover {
     background: #475569;
-    transform: translateY(-2px);
 }
 
-/* Le bouton actif : une couleur qui pète pour bien le voir */
 .nav-link.active {
-    background: #6366f1; /* Bleu Indigo pur */
+    background: #6366f1;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Optionnel : agrandit un peu l'icône au survol */
-.nav-link:hover .icon {
-    transform: scale(1.1);
+/* On réduit aussi la taille des emojis */
+.nav-link .icon {
+    font-size: 1rem;
 }
