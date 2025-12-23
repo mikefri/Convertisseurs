@@ -378,3 +378,59 @@ body, .control-group, .preview-card, header, footer, .upload-section {
 .nav-link:active {
     transform: scale(0.95);
 }
+
+.player-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.play-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary-color, #007bff); /* Utilise ta couleur principale */
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-circle:hover {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+}
+
+.progress-wrapper {
+    flex-grow: 1;
+}
+
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+#audio-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--primary-color, #007bff);
+    transition: width 0.1s linear;
+}
+
+.time-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #666;
+}
