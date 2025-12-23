@@ -10,14 +10,17 @@
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styleaudio.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
 </head>
 <body>
-
     <div class="app-container">
         <header>
             <button id="theme-switch" class="theme-toggle">🌙 Mode Sombre</button>
+            <nav class="main-nav">
+                    <a href="index.html" class="nav-link">🖼️ Images</a>
+                    <a href="indexaudio.html" class="nav-link active">🎵 Audio</a>
+                </nav>
             <h1 class="logo">🎵 AudioConvert <span>Pro</span></h1>
             <p class="subtitle">Par <strong>Micfri</strong> • MP3, OGG, WAV, M4A, AAC • 100% Local</p>
         </header>
@@ -83,7 +86,7 @@
                     <div class="actions">
                         <button id="download-btn" class="btn-primary">📥 Convertir & Télécharger</button>
                         <div class="btn-row">
-                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouvelle image</button>
+                            <button onclick="location.reload()" class="btn-ghost danger">🗑️ Nouvelle conversion</button>
                         </div>
                     </div>
 
@@ -117,21 +120,37 @@
 
         <button id="help-btn" class="help-trigger">?</button>
         <div id="help-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>💡 Aide Formats Audio</h2>
-                <div class="help-grid">
-                    <div class="help-item">
-                        <h4>💿 MP3 & OGG</h4>
-                        <p>Formats avec perte, parfaits pour réduire le poids d'un fichier FLAC de 30 Mo à 8 Mo.</p>
-                    </div>
-                    <div class="help-item">
-                        <h4>🔊 WAV & FLAC</h4>
-                        <p>Formats haute qualité. Le poids restera élevé car ils conservent tous les détails sonores.</p>
-                    </div>
-                </div>
-                <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">Compris !</button>
-            </div>
+<div class="modal-content">
+    <span class="close-modal" aria-label="Fermer">&times;</span>
+    
+    <header>
+        <h2>💡 Aide Formats Audio</h2>
+    </header>
+
+    <div class="help-grid">
+        <section class="help-item">
+            <h4>Formats avec perte (Légers)</h4>
+            <p>Idéal pour le quotidien, le streaming et économiser de la place.</p>
+            <ul>
+                <li><strong>MP3 :</strong> Universel, compatible avec tous les appareils.</li>
+                <li><strong>OGG :</strong> Meilleur rapport qualité/poids que le MP3 (utilisé par Spotify).</li>
+                <li><strong>AAC :</strong> Standard Apple/YouTube, très performant sur mobile.</li>
+            </ul>
+        </section>
+
+        <section class="help-item">
+            <h4>Formats sans perte (Qualité Totale)</h4>
+            <p>Idéal pour le montage professionnel ou l'archivage haute fidélité.</p>
+            <ul>
+                <li><strong>WAV :</strong> Le son pur, non compressé. Très volumineux.</li>
+                <li><strong>FLAC :</strong> Qualité CD parfaite, 2x plus léger que le WAV.</li>
+                <li><strong>ALAC :</strong> L'alternative "sans perte" pour l'écosystème Apple.</li>
+            </ul>
+        </section>
+    </div>
+
+    <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">J'ai compris</button>
+</div>
         </div>
 
         <footer class="app-footer">
