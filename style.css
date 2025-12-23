@@ -341,41 +341,32 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     gap: 15px;
     padding: 20px;
     justify-content: center;
-    background: #f8fafc; /* Fond très clair pour la barre */
+    background: none; /* Plus de rectangle blanc en arrière-plan */
 }
 
 .nav-link {
     text-decoration: none;
-    /* Couleur du texte sombre pour être bien visible */
-    color: #1e293b; 
-    background: #ffffff;
+    color: #ffffff; /* Texte blanc (adapte si ton fond est clair) */
+    background: rgba(255, 255, 255, 0.1); /* Fond léger et transparent */
     padding: 12px 24px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 600;
-    transition: all 0.25s ease;
-    /* Une petite bordure grise pour définir les contours */
-    border: 2px solid #e2e8f0; 
+    transition: all 0.3s ease;
+    border: none; /* Aucune bordure */
 }
 
-/* Style au survol (Hover) */
+/* Effet au survol */
 .nav-link:hover {
-    border-color: #6366f1;
-    color: #6366f1;
-    background: #f5f3ff;
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
 }
 
-/* Style du bouton sélectionné (Active) - Très visible */
+/* Style du bouton actif (celui qui est sélectionné) */
 .nav-link.active {
-    background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-    color: #ffffff; /* Texte blanc sur fond foncé */
-    border-color: #4338ca;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-.icon {
-    font-size: 1.2rem;
+    background: #6366f1; /* Couleur vive uniquement sur le bouton actif */
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
 }
