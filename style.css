@@ -336,53 +336,52 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     color: var(--primary-light);
 }
 
-D'accord, je comprends. Tu veux des boutons avec une couleur pleine (opaque), sans aucune transparence, et surtout sans le grand rectangle blanc qui entourait toute la barre de navigation.
-
-Voici le code corrigé : les boutons sont solides, bien visibles, et flottent directement sur ton fond de page.
-
-Le Code CSS
-CSS
-
-/* Le conteneur ne doit pas avoir de fond blanc ni faire toute la largeur */
+/* Style du conteneur de navigation */
 .main-nav {
     display: flex;
-    justify-content: center; /* Centre les boutons horizontalement */
-    gap: 10px;               /* Espace précis entre les deux boutons */
-    padding: 15px;
-    background: transparent;  /* SUPPRIME le rectangle blanc en arrière-plan */
-    width: fit-content;      /* Empêche la barre de s'étirer sur tout l'écran */
-    margin: 0 auto;          /* Centre le groupe de boutons dans la page */
+    gap: 15px;
+    padding: 20px;
+    background-color: #f8f9fa; /* Fond léger */
+    border-radius: 12px;
+    justify-content: center;
 }
 
+/* Style de base des liens (boutons) */
 .nav-link {
     text-decoration: none;
+    color: #4a4a4a;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease; /* Animation fluide */
+    border: 1px solid transparent;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;       /* Taille réduite et élégante */
-    border-radius: 8px;      /* Coins arrondis propres */
-    font-family: sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    border: none;
-    /* Couleur de base opaque (gris sombre) */
-    background-color: #334155; 
-    color: white;
 }
 
-/* Le bouton actif (ex: Images) */
-.nav-link.active {
-    background-color: #6366f1; /* Bleu/Violet vif */
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
-}
-
-/* Effet au survol */
+/* Effet au survol (Hover) */
 .nav-link:hover {
-    background-color: #475569;
-    transform: translateY(-1px);
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000;
+    transform: translateY(-2px); /* Petit soulèvement */
 }
 
-.nav-link.active:hover {
-    background-color: #4f46e5;
+/* Style du bouton actif */
+.nav-link.active {
+    background-color: #ffffff;
+    color: #2d3436;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre douce */
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Petit indicateur visuel pour l'actif (optionnel) */
+.nav-link.active::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background-color: #007AFF; /* Couleur d'accentuation */
+    border-radius: 50%;
+    margin-left: 5px;
 }
