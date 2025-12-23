@@ -376,3 +376,17 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     position: absolute;
     right: 0;
 }
+/* Animation de fondu à l'entrée */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Optionnel : Une transition fluide pour le bouton actif du menu */
+.nav-link {
+    transition: background-color 0.4s ease, transform 0.2s ease;
+}
