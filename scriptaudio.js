@@ -170,21 +170,44 @@ if (themeBtn) {
         localStorage.setItem('theme', newTheme);
     });
 }
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        // On vérifie si le lien est interne
-        if (this.hostname === window.location.hostname) {
-            e.preventDefault(); // On stoppe le chargement immédiat
-            let target = this.href;
-
-            // On ajoute une classe de sortie au body
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.4s ease';
-
-            // On attend la fin de l'animation avant de changer de page
-            setTimeout(() => {
-                window.location.href = target;
-            }, 400);
-        }
-    });
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('.nav-link');
+    if (link) {
+        e.preventDefault();
+        const targetUrl = link.getAttribute('href');
+        loadPage(targetUrl);
+    }
 });
+
+async function loadPage(url) {
+    const main = document.querySelector('main');
+    
+    // 1. Début de la transition visuelle
+    main.classList.add('page-hidden');
+
+    // 2. Récupération de la nouvelle page en arrière-plan
+    const response = await fetch(url);
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const newContent = doc.querySelector('main').innerHTML;
+    const newTitle = doc.title;
+
+    // 3. Injection rapide
+    setTimeout(() => {
+        main.innerHTML = newContent;
+        document.title = newTitle;
+        window.history.pushState({}, '', url);
+        
+        // Mise à jour visuelle des boutons du menu
+        document.querySelectorAll('.nav-link').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('href') === url);
+        });
+
+        // 4. Fin de la transition
+        main.classList.remove('page-hidden');
+        
+        // RE-INITIALISER TES SCRIPTS ICI (ex: relancer les détecteurs de fichiers)
+        initApp(); 
+    }, 150); 
+}
