@@ -347,41 +347,44 @@ body, .control-group, .preview-card, header, footer, .upload-section {
 }
 
 /* Style de base des liens (boutons) */
+/* Style du conteneur */
+.main-nav {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    background-color: transparent;
+    justify-content: center;
+}
+
+/* Style du bouton INACTIF (par défaut) */
 .nav-link {
     text-decoration: none;
-    color: #4a4a4a;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #555;
+    font-family: 'Segoe UI', sans-serif;
     font-weight: 500;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease; /* Animation fluide */
-    border: 1px solid transparent;
+    padding: 10px 22px;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: all 0.25s ease;
+    
+    /* Le contour du bouton inactif */
+    border: 2px solid #e0e0e0; 
+    background-color: transparent;
 }
 
-/* Effet au survol (Hover) */
+/* Effet au survol du bouton inactif */
 .nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: #000;
-    transform: translateY(-2px); /* Petit soulèvement */
+    border-color: #b0b0b0; /* Le contour fonce un peu */
+    background-color: rgba(0, 0, 0, 0.02);
+    color: #222;
 }
 
-/* Style du bouton actif */
+/* Style du bouton ACTIF */
 .nav-link.active {
-    background-color: #ffffff;
-    color: #2d3436;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre douce */
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-/* Petit indicateur visuel pour l'actif (optionnel) */
-.nav-link.active::after {
-    content: '';
-    width: 4px;
-    height: 4px;
-    background-color: #007AFF; /* Couleur d'accentuation */
-    border-radius: 50%;
-    margin-left: 5px;
+    border-color: #007AFF; /* Couleur d'accentuation (Bleu iOS/Moderne) */
+    color: #007AFF;
+    background-color: rgba(0, 122, 255, 0.05); /* Très léger fond coloré */
+    font-weight: 600;
 }
