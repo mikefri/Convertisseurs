@@ -343,43 +343,46 @@ Voici le code corrigé : les boutons sont solides, bien visibles, et flottent di
 Le Code CSS
 CSS
 
-/* Le conteneur est totalement invisible */
+/* Le conteneur ne doit pas avoir de fond blanc ni faire toute la largeur */
 .main-nav {
     display: flex;
-    gap: 8px; /* Espacement réduit entre les boutons */
-    padding: 10px;
-    justify-content: center;
-    background: transparent;
+    justify-content: center; /* Centre les boutons horizontalement */
+    gap: 10px;               /* Espace précis entre les deux boutons */
+    padding: 15px;
+    background: transparent;  /* SUPPRIME le rectangle blanc en arrière-plan */
+    width: fit-content;      /* Empêche la barre de s'étirer sur tout l'écran */
+    margin: 0 auto;          /* Centre le groupe de boutons dans la page */
 }
 
 .nav-link {
     text-decoration: none;
-    color: #ffffff;
-    background: #334155;
-    /* Padding réduit : 6px en haut/bas, 14px à gauche/droite */
-    padding: 6px 14px; 
-    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    /* Taille de texte plus petite */
-    font-size: 0.85rem; 
+    gap: 8px;
+    padding: 8px 16px;       /* Taille réduite et élégante */
+    border-radius: 8px;      /* Coins arrondis propres */
+    font-family: sans-serif;
+    font-size: 14px;
     font-weight: 600;
     transition: all 0.2s ease;
     border: none;
-    white-space: nowrap; /* Empêche le texte de revenir à la ligne */
+    /* Couleur de base opaque (gris sombre) */
+    background-color: #334155; 
+    color: white;
 }
 
-.nav-link:hover {
-    background: #475569;
-}
-
+/* Le bouton actif (ex: Images) */
 .nav-link.active {
-    background: #6366f1;
-    color: #ffffff;
+    background-color: #6366f1; /* Bleu/Violet vif */
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
 }
 
-/* On réduit aussi la taille des emojis */
-.nav-link .icon {
-    font-size: 1rem;
+/* Effet au survol */
+.nav-link:hover {
+    background-color: #475569;
+    transform: translateY(-1px);
+}
+
+.nav-link.active:hover {
+    background-color: #4f46e5;
 }
