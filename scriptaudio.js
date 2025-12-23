@@ -170,3 +170,18 @@ if (themeBtn) {
         localStorage.setItem('theme', newTheme);
     });
 }
+// --- LOGIQUE DE LA MODALE D'AIDE ---
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
+const closeModal = document.querySelector('.close-modal');
+
+if (helpBtn) {
+    helpBtn.onclick = () => helpModal.style.display = "flex";
+}
+if (closeModal) {
+    closeModal.onclick = () => helpModal.style.display = "none";
+}
+
+window.onclick = (event) => {
+    if (event.target == helpModal) helpModal.style.display = "none";
+}
