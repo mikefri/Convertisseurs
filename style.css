@@ -390,3 +390,32 @@ body {
 .nav-link {
     transition: background-color 0.4s ease, transform 0.2s ease;
 }
+/* Animation globale très rapide (250ms) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Optionnel : Garder le menu fixe pendant la transition */
+header, nav {
+  view-transition-name: main-header;
+}
+
+/* Animation de fondu simple pour tout le reste */
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+/* Applique l'effet au changement de page */
+::view-transition-old(root) {
+  animation: 150ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 250ms cubic-bezier(0, 0, 0.2, 1) both fade-in;
+}
