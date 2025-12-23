@@ -346,15 +346,7 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     justify-content: center;
 }
 
-/* Style de base des liens (boutons) */
-/* Style du conteneur */
-.main-nav {
-    display: flex;
-    gap: 12px;
-    padding: 20px;
-    background-color: transparent;
-    justify-content: center;
-}
+
 
 /* Style du bouton INACTIF (par défaut) */
 .nav-link {
