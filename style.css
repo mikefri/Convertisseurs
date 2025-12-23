@@ -335,3 +335,50 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     background: #1e293b;
     color: var(--primary-light);
 }
+
+/* Conteneur de la navigation */
+.main-nav {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Style de base des liens */
+.nav-link {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+/* Effet au survol (Hover) */
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* État Actif (La page où l'on se trouve) */
+.nav-link.active {
+    background: #ffffff;
+    color: #1a1a1a;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* Animation de clic */
+.nav-link:active {
+    transform: translateY(-1px);
+}
