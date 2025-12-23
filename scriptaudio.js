@@ -185,4 +185,3 @@ if (closeModal) {
 window.onclick = (event) => {
     if (event.target == helpModal) helpModal.style.display = "none";
 }
-
