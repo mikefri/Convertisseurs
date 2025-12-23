@@ -42,24 +42,31 @@
                 </label>
             </div>
 
-<div class="audio-info-box">
-    <div class="audio-icon-large">💿</div>
-    <h2 id="audio-filename">fichier_audio.flac</h2>
-    
-    <div class="player-controls-row">
-        <button id="main-play-btn" class="play-circle">▶</button>
-        <div class="progress-wrapper">
-            <div class="progress-container" id="progress-container">
-                <div id="audio-progress-fill"></div>
-            </div>
-            <div class="time-info">
-                <span id="current-time">0:00</span>
-                <span id="audio-duration">00:00</span>
+<div class="preview-card">
+    <div class="audio-info-box">
+        <div class="audio-header">
+            <div class="audio-icon-large">💿</div>
+            <div class="audio-text">
+                <h2 id="audio-filename">fichier_audio.flac</h2>
+                <span class="status-badge" id="audio-duration">00:00</span>
             </div>
         </div>
+        
+        <div class="custom-audio-player">
+            <button id="main-play-btn" class="play-btn">▶</button>
+            <div class="progress-wrapper">
+                <div class="progress-container" id="progress-container">
+                    <div id="audio-progress-fill"></div>
+                </div>
+                <div class="time-row">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">0:00</span>
+                </div>
+            </div>
+        </div>
+        
+        <audio id="main-audio" style="display:none;"></audio>
     </div>
-    
-    <audio id="main-audio" style="display:none;"></audio>
 </div>
                         
                         <div class="progress-container">
