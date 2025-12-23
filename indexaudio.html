@@ -120,44 +120,39 @@
 
         <button id="help-btn" class="help-trigger">?</button>
         <div id="help-modal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>💡 Aide Formats Audio</h2>
-                <div class="help-grid">
-                    <div class="help-item">
+<div class="modal-content">
+    <span class="close-modal" aria-label="Fermer">&times;</span>
+    
+    <header>
+        <h2>💡 Aide Formats Audio</h2>
+    </header>
 
+    <div class="help-grid">
+        <section class="help-item">
+            <h4>Formats avec perte (Légers)</h4>
+            <p>Idéal pour le quotidien, le streaming et économiser de la place.</p>
+            <ul>
+                <li><strong>MP3 :</strong> Universel, compatible avec tous les appareils.</li>
+                <li><strong>OGG :</strong> Meilleur rapport qualité/poids que le MP3 (utilisé par Spotify).</li>
+                <li><strong>AAC :</strong> Standard Apple/YouTube, très performant sur mobile.</li>
+            </ul>
+        </section>
 
-<h4> Formats avec perte (Légers)</h4>
-<p>Idéal pour le quotidien, le streaming et économiser de la place.</p>
+        <section class="help-item">
+            <h4>Formats sans perte (Qualité Totale)</h4>
+            <p>Idéal pour le montage professionnel ou l'archivage haute fidélité.</p>
+            <ul>
+                <li><strong>WAV :</strong> Le son pur, non compressé. Très volumineux.</li>
+                <li><strong>FLAC :</strong> Qualité CD parfaite, 2x plus léger que le WAV.</li>
+                <li><strong>ALAC :</strong> L'alternative "sans perte" pour l'écosystème Apple.</li>
+            </ul>
+        </section>
+    </div>
 
-<p>MP3 : Universel. Passe sur tous les appareils.
-
-OGG : Meilleur son que le MP3 à taille égale. Utilisé par Spotify.
-
-AAC : Standard Apple/YouTube. Très performant sur mobile.</p>
-                                            </div>
-                    <div class="help-item">
-
-<h4> Formats sans perte (Qualité Totale) </h4>
-<p>Idéal pour le montage professionnel ou l'archivage haute fidélité.</p>
-
-<p>WAV : Le son pur, non compressé. Très lourd.
-
-FLAC : Qualité CD parfaite, compressé pour prendre 2x moins de place que le WAV.
-
-ALAC (M4A) : Le "FLAC" version Apple.</p>
+    <footer>
+        <button class="btn-primary" onclick="closeModal()">Compris !</button>
+    </footer>
 </div>
-
-
-
-
-
-
-
-
-                </div>
-                <button class="btn-primary" style="margin-top:20px;" onclick="document.getElementById('help-modal').style.display='none'">Compris !</button>
-            </div>
         </div>
 
 <footer class="app-footer">
