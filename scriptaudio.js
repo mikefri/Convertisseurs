@@ -186,38 +186,3 @@ window.onclick = (event) => {
     if (event.target == helpModal) helpModal.style.display = "none";
 }
 
-const audio = document.getElementById('main-audio');
-const playBtn = document.getElementById('main-play-btn');
-const progressFill = document.getElementById('audio-progress-fill');
-const progressContainer = document.getElementById('progress-container');
-const currentTimeDisplay = document.getElementById('current-time');
-
-// Play / Pause
-playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-        audio.play();
-        playBtn.innerText = "⏸";
-    } else {
-        audio.pause();
-        playBtn.innerText = "▶";
-    }
-});
-
-// Mise à jour de la barre et du temps
-audio.addEventListener('timeupdate', () => {
-    const percent = (audio.currentTime / audio.duration) * 100;
-    progressFill.style.width = percent + '%';
-    
-    // Formatage du temps (ex: 0:45)
-    const mins = Math.floor(audio.currentTime / 60);
-    const secs = Math.floor(audio.currentTime % 60);
-    currentTimeDisplay.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-});
-
-// Cliquer sur la barre pour changer de moment
-progressContainer.addEventListener('click', (e) => {
-    const width = progressContainer.clientWidth;
-    const clickX = e.offsetX;
-    const duration = audio.duration;
-    audio.currentTime = (clickX / width) * duration;
-});
