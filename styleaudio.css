@@ -335,3 +335,44 @@ body, .control-group, .preview-card, header, footer, .upload-section {
     background: #1e293b;
     color: var(--primary-light);
 }
+
+/* Style du menu de navigation */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-color, #333);
+    padding: 10px 20px;
+    border-radius: 25px;
+    background: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.nav-link.active {
+    background: #007bff; /* Ou ta couleur principale */
+    color: white;
+}
+
+/* Ajustement header pour le switch */
+.header-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.theme-toggle {
+    position: absolute;
+    right: 0;
+}
